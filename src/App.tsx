@@ -1,5 +1,7 @@
-
-import { useState } from 'react'
+import { useState } from "react";
+import LoginPage from "./pages/LoginPage";
+import DeveloperDashboard from "./pages/DeveloperDashboard";
+import type { PortalRole } from "./pages/LoginPage";
 import {
   Activity,
   Bell,
@@ -52,7 +54,7 @@ const metrics = [
   { label: 'Game sessions', value: '892', change: '+6.8%', icon: Zap, tone: 'green' },
 ]
 
-function App() {
+function Dashboard() {
   const [activePage, setActivePage] = useState('Overview')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [searchText, setSearchText] = useState('')
@@ -317,4 +319,24 @@ function App() {
   )
 }
 
-export default App
+
+export default function App() {
+  const [showDashboard, setShowDashboard] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<PortalRole>("ADMIN");
+  if (!showDashboard) {
+    return (
+      <LoginPage
+        onContinue={(role) => {
+          setSelectedRole(role);
+          setShowDashboard(true);
+        }}
+      />
+    );
+  }
+
+  if (selectedRole === "DEVELOPER") {
+    return <DeveloperDashboard />;
+  }
+
+  return <Dashboard />;
+}
