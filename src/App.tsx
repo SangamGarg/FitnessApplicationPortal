@@ -1,7 +1,7 @@
 import { useState } from "react";
-import LoginPage from "./pages/LoginPage";
 import DeveloperDashboard from "./pages/DeveloperDashboard";
-import type { PortalRole } from "./pages/LoginPage";
+import PortalAuthPage from "./pages/PortalAuthPage";
+import DeveloperManagement from "./pages/DeveloperManagement";
 import {
   Activity,
   Bell,
@@ -9,6 +9,7 @@ import {
   Code2,
   Dumbbell,
   LayoutDashboard,
+  LogOut,
   Menu,
   Search,
   Settings,
@@ -27,10 +28,12 @@ import {
   YAxis,
 } from 'recharts'
 import './App.css'
+import './portalLogout.css'
 
 const navigation = [
   { label: 'Overview', group: 'MAIN', icon: LayoutDashboard },
   { label: 'Users', group: 'MAIN', icon: Users },
+  { label: 'Developers', group: 'MAIN', icon: Users },
   { label: 'Workouts & Games', group: 'MAIN', icon: Dumbbell },
   { label: 'Developer Tools', group: 'DEVELOPMENT', icon: Code2 },
   { label: 'API Health', group: 'DEVELOPMENT', icon: Activity },
@@ -128,8 +131,8 @@ function Dashboard() {
           <div className="profile">
             <div className="profile-avatar">A</div>
             <div className="profile-info">
-              <strong>Portal Admin</strong>
-              <span>Demo account</span>
+              <strong>{sessionStorage.getItem("portalName") || "Portal user"}</strong>
+              <span>{sessionStorage.getItem("portalRole") || "Portal"}</span>
             </div>
             <ChevronDown size={16} className="muted-icon" />
           </div>
@@ -163,14 +166,14 @@ function Dashboard() {
               <span />
             </button>
             <div className="topbar-divider" />
-            <div className="mini-avatar">A</div>
+            <button className="icon-button" title="Sign out" aria-label="Sign out" onClick={() => { sessionStorage.clear(); window.location.reload(); }}><LogOut size={17} /></button>
           </div>
         </header>
 
         <div className="page-content">
           <div className="welcome-row">
             <div>
-              <div className="eyebrow">{isDeveloperPage ? 'DEVELOPER CONSOLE' : 'PLATFORM OVERVIEW'}</div>
+              <div className="eyebrow">{isDeveloperPage ? 'DEVELOPER CONSOLE' : activePage === 'Developers' ? 'ACCESS MANAGEMENT' : 'PLATFORM OVERVIEW'}</div>
               <h1>{activePage === 'Overview' ? 'Dashboard overview' : activePage}</h1>
               <p>
                 {activePage === 'Overview'
@@ -295,6 +298,8 @@ function Dashboard() {
                 </div>
               </section>
             </>
+          ) : activePage === 'Developers' ? (
+            <DeveloperManagement />
           ) : (
             <section className="panel placeholder-panel">
               <div className="placeholder-icon"><Code2 size={28} /></div>
@@ -321,22 +326,14 @@ function Dashboard() {
 
 
 export default function App() {
-  const [showDashboard, setShowDashboard] = useState(false);
-  const [selectedRole, setSelectedRole] = useState<PortalRole>("ADMIN");
-  if (!showDashboard) {
-    return (
-      <LoginPage
-        onContinue={(role) => {
-          setSelectedRole(role);
-          setShowDashboard(true);
-        }}
-      />
-    );
-  }
+  const [authenticated, setAuthenticated] = useState(() => !new URLSearchParams(window.location.search).has("token") && Boolean(sessionStorage.getItem("portalToken")));
+  const [selectedRole, setSelectedRole] = useState<"ADMIN" | "DEVELOPER">(() =>
+    sessionStorage.getItem("portalRole") === "DEVELOPER" ? "DEVELOPER" : "ADMIN"
+  );
 
-  if (selectedRole === "DEVELOPER") {
-    return <DeveloperDashboard />;
+  if (!authenticated) {
+    return <PortalAuthPage onAuthenticated={(role) => { setSelectedRole(role); setAuthenticated(true); }} />;
   }
-
+  if (selectedRole === "DEVELOPER") return <><button className="portal-dev-logout" onClick={() => { sessionStorage.clear(); window.location.reload(); }}><LogOut size={15} /> Sign out</button><DeveloperDashboard /></>;
   return <Dashboard />;
 }
