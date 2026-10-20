@@ -22,14 +22,14 @@ export default function PortalAuthPage({ onAuthenticated }: Props) {
       if (mode === "setup") {
         if (!setupToken) throw new Error("This setup link is missing its token. Ask an Admin for a new link.");
         if (password !== confirmPassword) throw new Error("Passwords do not match.");
-        const response = await fetch("/api/portal/auth/setup", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: setupToken, password }) });
+        const response = await fetch("/api/portal/auth/setup", { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: setupToken, password }) });
         const body = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(body.detail || body.message || "Could not set password. The link may have expired.");
         setMessage("Password created. You can now sign in with your email and password.");
         setMode("login"); setPassword(""); setConfirmPassword("");
         window.history.replaceState({}, "", window.location.pathname);
       } else {
-        const response = await fetch("/api/portal/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password }) });
+        const response = await fetch("/api/portal/auth/login", { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password }) });
         const body = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(body.detail || body.message || "Invalid email or password.");
         if (!body.accessToken || !["ADMIN", "DEVELOPER"].includes(body.role)) throw new Error("The server returned an invalid portal session.");

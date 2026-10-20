@@ -9,6 +9,7 @@ import {
     CircleHelp,
     Code2,
     Database,
+    Dumbbell,
     FileCode2,
     Gauge,
     GitBranch,
@@ -23,13 +24,15 @@ import {
     XCircle,
 } from "lucide-react";
 import "./DeveloperDashboard.css";
+import DeveloperFeatureConsole from "./DeveloperFeatureConsole";
 
 type DeveloperSection =
     | "Overview"
     | "Services"
     | "API Explorer"
     | "Logs"
-    | "Settings";
+    | "Settings"
+    | "Fitness Tools";
 
 type PortalRole = "ADMIN" | "DEVELOPER";
 
@@ -48,6 +51,7 @@ const navigation: {
         { label: "API Explorer", icon: Code2 },
         { label: "Logs", icon: FileCode2 },
         { label: "Settings", icon: Settings },
+        { label: "Fitness Tools", icon: Dumbbell },
     ];
 
 const endpoints = [
@@ -69,6 +73,11 @@ const endpoints = [
         description: "Developer endpoints",
         status: "Verify actual mapping",
     },
+    { method: "POST", path: "/api/v1/dev/exercise/upload/category", description: "Create exercise category", status: "Fitness tools" },
+    { method: "POST", path: "/api/v1/dev/calculator/upload-calories-in-food", description: "Upload food nutrition", status: "Fitness tools" },
+    { method: "GET", path: "/api/v1/dev/feedback/all", description: "Read feedback", status: "Fitness tools" },
+    { method: "POST", path: "/api/v1/dev/notification/send", description: "Send device notification", status: "Fitness tools" },
+    { method: "POST", path: "/api/v1/dev/email/send-email-one-user", description: "Send user email", status: "Fitness tools" },
 ];
 
 const services = [
@@ -254,8 +263,8 @@ export default function DeveloperDashboard() {
                         <span className="dev-avatar">D</span>
 
                         <span className="dev-user-copy">
-                            <strong>Developer</strong>
-                            <small>Preview workspace</small>
+                            <strong>{sessionStorage.getItem("portalName") || sessionStorage.getItem("portalEmail") || "Developer"}</strong>
+                            <small>{sessionStorage.getItem("portalRole") || "Developer"} workspace</small>
                         </span>
 
                         <ChevronDown size={16} />
@@ -855,6 +864,9 @@ export default function DeveloperDashboard() {
                         </div>
                     </div>
                 )}
+
+                {/* FITNESS BACKEND TOOLS */}
+                {activeSection === "Fitness Tools" && <DeveloperFeatureConsole />}
             </main>
         </div>
     );

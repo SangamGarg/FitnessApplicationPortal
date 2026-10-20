@@ -73,3 +73,14 @@ export default defineConfig([
 ])
 
 ```
+
+
+## Portal backend integration
+- Vite proxies `/api` requests to `http://localhost:8080`.
+- Portal login: `POST /api/portal/auth/login`.
+- One-time password setup: `POST /api/portal/auth/setup`.
+- Session validation: `GET /api/portal/auth/me`.
+- Admin developer management: `/api/portal/admin/developers`.
+- Developer list/create/status/reset/delete actions now use the backend routes from `FitnessAppBackend_Portal_Refactor.zip`.
+- API-key regeneration was removed because the backend refactor intentionally removed API-key authentication.
+- The overview dashboard still contains sample analytics; the backend patch does not expose matching analytics endpoints.
