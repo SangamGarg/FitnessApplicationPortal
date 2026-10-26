@@ -57,27 +57,27 @@ const navigation: {
 const endpoints = [
     {
         method: "POST",
-        path: "/api/v1/user/loginRegister",
+        path: "/api/portal/user/loginRegister",
         description: "User authentication",
         status: "Authentication flow",
     },
     {
         method: "POST",
-        path: "/api/v1/user/refresh-token",
+        path: "/api/portal/user/refresh-token",
         description: "Refresh access token",
         status: "Authentication flow",
     },
     {
-        method: "GET",
-        path: "/api/v1/dev/",
-        description: "Developer endpoints",
-        status: "Verify actual mapping",
+        method: "PATCH",
+        path: "/api/portal/dev/exercise/patch/category",
+        description: "Update exercise category",
+        status: "JWT protected",
     },
-    { method: "POST", path: "/api/v1/dev/exercise/upload/category", description: "Create exercise category", status: "Fitness tools" },
-    { method: "POST", path: "/api/v1/dev/calculator/upload-calories-in-food", description: "Upload food nutrition", status: "Fitness tools" },
-    { method: "GET", path: "/api/v1/dev/feedback/all", description: "Read feedback", status: "Fitness tools" },
-    { method: "POST", path: "/api/v1/dev/notification/send", description: "Send device notification", status: "Fitness tools" },
-    { method: "POST", path: "/api/v1/dev/email/send-email-one-user", description: "Send user email", status: "Fitness tools" },
+    { method: "POST", path: "/api/portal/dev/exercise/upload/category", description: "Create exercise category", status: "Fitness tools" },
+    { method: "POST", path: "/api/portal/dev/calculator/upload-calories-in-food", description: "Upload food nutrition", status: "Fitness tools" },
+    { method: "GET", path: "/api/portal/dev/feedback/all", description: "Read feedback", status: "Fitness tools" },
+    { method: "POST", path: "/api/portal/dev/notification/send", description: "Send device notification", status: "Fitness tools" },
+    { method: "POST", path: "/api/portal/dev/email/send-email-one-user", description: "Send user email", status: "Fitness tools" },
 ];
 
 const services = [
