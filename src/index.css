@@ -2,6 +2,9 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
 
 :root {
+  --portal-brand: #15966c;
+  --portal-brand-dark: #107d5b;
+  --portal-border: #e6ece8;
   font-family: 'DM Sans', sans-serif;
   color: #202338;
   background: #f7f8fc;
@@ -42,4 +45,13 @@ select:focus-visible {
 
 #root {
   min-height: 100vh;
+}
+
+.portal-session-check {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  color: #526158;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
 }

@@ -45,7 +45,7 @@ export default function PortalAuthPage({ onAuthenticated }: Props) {
 
   return <main className="portal-auth-shell">
     <section className="portal-auth-card">
-      <div className="portal-auth-brand"><span className="portal-auth-logo"><Activity size={23} /></span><span>Fitness<span className="portal-auth-brand-accent">OS</span><small>DEVELOPER PLATFORM</small></span></div>
+      <div className="portal-auth-brand"><span className="portal-auth-logo"><Activity size={23} /></span><span>MusclePlay<small>ADMIN &amp; DEVELOPER PORTAL</small></span></div>
       <div className="portal-auth-art"><div className="portal-auth-art-orb orb-one"/><div className="portal-auth-art-orb orb-two"/><div className="portal-auth-art-icon"><ShieldCheck size={31}/></div><span className="portal-auth-art-tag">SECURE WORKSPACE</span></div>
       <div className="portal-auth-copy"><div className="portal-auth-eyebrow">{mode === "setup" ? "ACCOUNT ACTIVATION" : "WELCOME BACK"}</div><h1>{mode === "setup" ? "Set your password" : "Sign in to your portal"}</h1><p>{mode === "setup" ? "Choose a strong password to activate your developer account." : "Manage your fitness platform with your authorized workspace access."}</p></div>
       <form className="portal-auth-form" onSubmit={submit}>
@@ -55,8 +55,8 @@ export default function PortalAuthPage({ onAuthenticated }: Props) {
         {error && <div className="portal-auth-alert error">{error}</div>}{message && <div className="portal-auth-alert success">{message}</div>}
         <button className="portal-auth-submit" type="submit" disabled={busy}>{busy ? "Please wait…" : mode === "setup" ? "Activate account" : "Sign in"}<ArrowRight size={17}/></button>
       </form>
-      <div className="portal-auth-footer"><ShieldCheck size={15}/> Access is controlled by your Fitness App administrator.</div>
+      <div className="portal-auth-footer"><ShieldCheck size={15}/> Access is controlled by your MusclePlay administrator.</div>
     </section>
-    <div className="portal-auth-bottom">FITNESSOS <span>·</span> PRIVATE DEVELOPER WORKSPACE</div>
+    <div className="portal-auth-bottom">MUSCLEPLAY <span>·</span> PRIVATE MANAGEMENT PORTAL</div>
   </main>;
 }

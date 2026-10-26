@@ -38,7 +38,7 @@ export default function LoginPage({ onContinue }: LoginPageProps) {
           <div className="brand-mark">
             <Activity size={24} strokeWidth={2.5} />
           </div>
-          <span>FitnessOS</span>
+          <span>MusclePlay</span>
         </div>
 
         <div className="visual-content">
@@ -54,7 +54,7 @@ export default function LoginPage({ onContinue }: LoginPageProps) {
           </h1>
 
           <p>
-            Your central workspace to manage the fitness platform,
+            Your central workspace to manage the MusclePlay fitness platform,
             monitor activity, and keep your services running smoothly.
           </p>
 
@@ -93,7 +93,7 @@ export default function LoginPage({ onContinue }: LoginPageProps) {
             <div className="brand-mark">
               <Activity size={22} strokeWidth={2.5} />
             </div>
-            <span>FitnessOS</span>
+            <span>MusclePlay</span>
           </div>
 
           <div className="form-heading">

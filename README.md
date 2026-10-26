@@ -1,86 +1,49 @@
-# React + TypeScript + Vite
+# MusclePlay Management Portal
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend portal for the MusclePlay fitness ecosystem, built with React, TypeScript, and Vite.
+This repository contains portal code only: it does not implement backend services, database
+schemas, migrations, or persistence. The frontend communicates with backend APIs through the
+Vite `/api` proxy and never connects directly to PostgreSQL.
 
-Currently, two official plugins are available:
+## Run locally
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```sh
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+The Vite development server proxies `/api` to `http://localhost:8080`. Use `npm run build`
+for TypeScript checks and a production build, or `npm run lint` for ESLint.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Authentication and existing integrations
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Portal login, one-time account setup, session validation, refresh, and logout use
+  `/api/portal/auth/*`.
+- Admin developer account management uses `/api/portal/admin/developers`.
+- The Developer Fitness Tools console calls the listed `/api/portal/dev/*` endpoints.
+- Developer technical monitoring checks `/api/health`.
+- API routes are integration contracts, not a substitute for backend authorization. The
+  backend must enforce permissions and validate every request.
 
-```
+## Current implementation status
 
+| Area | Status | Notes |
+| --- | --- | --- |
+| Portal authentication | Integrated | Requires the separate backend and its configured session/auth routes. |
+| Developer management | Integrated | Uses backend developer-management routes. |
+| Developer fitness tools | Partially integrated | Existing console sends API requests; verify the target environment before using write, delete, email, or notification actions. |
+| Developer overview and API reference | Partially integrated | Health check calls the configured API; analytics and endpoint catalog entries are not verified telemetry or a live API catalogue. |
+| Admin overview and operations modules | UI preview | Uses explicit demo fixtures or unavailable states. No production analytics or operational records are presented as live data. |
+| Cashout, MP Coins, store billing, referrals, and fraud review | Not operational | No financial, balance, payout, or automated enforcement action is implemented in this frontend preview. |
+| Support, content publication, and other CMS modules | Not connected | Navigation and readiness screens are present; corresponding backend services are required. |
 
-## Portal backend integration
-- Vite proxies `/api` requests to `http://localhost:8080`.
-- Portal login: `POST /api/portal/auth/login`.
-- One-time password setup: `POST /api/portal/auth/setup`.
-- Session validation: `GET /api/portal/auth/me`.
-- Admin developer management: `/api/portal/admin/developers`.
-- Developer list/create/status/reset/delete actions now use the backend routes from `FitnessAppBackend_Portal_Refactor.zip`.
-- API-key regeneration was removed because the backend refactor intentionally removed API-key authentication.
-- The overview dashboard still contains sample analytics; the backend patch does not expose matching analytics endpoints.
+Admin demo actions are in-memory UI previews only. They do not issue backend requests, update balances,
+approve payments, ban users, or create audit records. Any production implementation must rely on
+server-side authorization, a reason for sensitive actions, ledger-backed financial changes, and
+auditable backend workflows.
+
+## Project organization
+
+- `src/features/admin/` — Admin workspace and its portal-specific styles.
+- `src/pages/` — Authentication, Developer workspace, developer account management, and API tools.
+- `src/lib/` — Shared portal API/session helpers.

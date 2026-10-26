@@ -4,22 +4,27 @@ import {
     Activity,
     ArrowUpRight,
     Bell,
-    CheckCircle2,
+    BookOpen,
+    Bot,
     ChevronDown,
     CircleHelp,
     Code2,
     Database,
     Dumbbell,
     FileCode2,
+    FileImage,
     Gauge,
+    Gamepad2,
     GitBranch,
     LayoutDashboard,
+    LifeBuoy,
+    ListChecks,
     Search,
     Server,
     Settings,
     ShieldCheck,
     Terminal,
-    Users,
+    Utensils,
     Wifi,
     XCircle,
 } from "lucide-react";
@@ -32,9 +37,18 @@ type DeveloperSection =
     | "API Explorer"
     | "Logs"
     | "Settings"
-    | "Fitness Tools";
-
-type PortalRole = "ADMIN" | "DEVELOPER";
+    | "Fitness Tools"
+    | "Exercise Library CMS"
+    | "Workout Plan CMS"
+    | "Workout Content CMS"
+    | "Diet and Food Database"
+    | "Fitness Calculator Configuration"
+    | "Games and Challenges Builder"
+    | "Media Asset Library"
+    | "FAQs and Help Center"
+    | "Chatbot Knowledge Management"
+    | "Content Publication and Version History"
+    | "Support Ticket Inbox";
 
 type HealthStatus = "checking" | "up" | "down";
 
@@ -45,14 +59,40 @@ type HealthResponse = {
 const navigation: {
     label: DeveloperSection;
     icon: typeof LayoutDashboard;
+    displayLabel?: string;
 }[] = [
-        { label: "Overview", icon: LayoutDashboard },
-        { label: "Services", icon: Server },
-        { label: "API Explorer", icon: Code2 },
+        { label: "Overview", displayLabel: "Developer Overview", icon: LayoutDashboard },
+        { label: "Exercise Library CMS", icon: Dumbbell },
+        { label: "Workout Plan CMS", icon: ListChecks },
+        { label: "Workout Content CMS", icon: BookOpen },
+        { label: "Diet and Food Database", icon: Utensils },
+        { label: "Fitness Calculator Configuration", icon: Activity },
+        { label: "Games and Challenges Builder", icon: Gamepad2 },
+        { label: "Media Asset Library", icon: FileImage },
+        { label: "FAQs and Help Center", icon: CircleHelp },
+        { label: "Chatbot Knowledge Management", icon: Bot },
+        { label: "API Explorer", displayLabel: "API Explorer and Documentation", icon: Code2 },
+        { label: "Content Publication and Version History", icon: FileCode2 },
+        { label: "Services", displayLabel: "Technical Monitoring", icon: Server },
+        { label: "Settings", displayLabel: "Developer Settings", icon: Settings },
+        { label: "Support Ticket Inbox", icon: LifeBuoy },
         { label: "Logs", icon: FileCode2 },
-        { label: "Settings", icon: Settings },
-        { label: "Fitness Tools", icon: Dumbbell },
+        { label: "Fitness Tools", displayLabel: "Fitness Tools Console", icon: Terminal },
     ];
+
+const moduleDescriptions: Partial<Record<DeveloperSection, string>> = {
+    "Exercise Library CMS": "Exercise create, update, and delete operations are available in the existing API console. Content is not published through a verified publication workflow yet.",
+    "Diet and Food Database": "Food nutrition upload and update operations are available in the existing API console. Dataset validation and import status are not connected.",
+    "Fitness Calculator Configuration": "Calculator records can be managed through the existing API console. Configuration versioning and validation are not connected.",
+    "Workout Plan CMS": "Workout plan authoring and exercise relationship APIs are not configured in this portal.",
+    "Workout Content CMS": "Workout content creation and publication APIs are not configured in this portal.",
+    "Games and Challenges Builder": "Game configuration, challenge authoring, and user-facing publication are not connected.",
+    "Media Asset Library": "Media upload, storage, moderation, and metadata APIs are not configured.",
+    "FAQs and Help Center": "FAQ management endpoints exist in the tools reference, but publication status and version history are not integrated.",
+    "Chatbot Knowledge Management": "Chatbot knowledge ingestion, validation, and release controls are not configured.",
+    "Content Publication and Version History": "No content publishing or version-history service is connected.",
+    "Support Ticket Inbox": "Ticket assignment, replies, and status updates require a support service that is not connected.",
+};
 
 const endpoints = [
     {
@@ -215,23 +255,25 @@ export default function DeveloperDashboard() {
                     </span>
 
                     <span>
-                        <strong>FitnessOS</strong>
-                        <small>Developer portal</small>
+                        <strong>MusclePlay</strong>
+                        <small>Developer workspace</small>
                     </span>
                 </div>
 
                 <div className="dev-workspace-label">WORKSPACE</div>
 
                 <nav className="dev-nav" aria-label="Developer navigation">
-                    {navigation.map(({ label, icon: Icon }) => (
+                    {navigation.map(({ label, displayLabel, icon: Icon }) => (
                         <button
                             key={label}
+                            aria-label={displayLabel ?? label}
+                            title={displayLabel ?? label}
                             className={`dev-nav-item ${activeSection === label ? "active" : ""
                                 }`}
                             onClick={() => setActiveSection(label)}
                         >
                             <Icon size={18} />
-                            <span>{label}</span>
+                            <span>{displayLabel ?? label}</span>
 
                             {label === "Logs" && (
                                 <span className="dev-nav-dot" />
@@ -543,7 +585,7 @@ export default function DeveloperDashboard() {
                         </section>
 
                         <div className="dev-footer">
-                            <span>FitnessOS Developer Portal</span>
+                            <span>MusclePlay Developer Portal</span>
                             <span>
                                 {lastHealthCheck
                                     ? `Last health check: ${lastHealthCheck.toLocaleTimeString()}`
@@ -867,6 +909,43 @@ export default function DeveloperDashboard() {
 
                 {/* FITNESS BACKEND TOOLS */}
                 {activeSection === "Fitness Tools" && <DeveloperFeatureConsole />}
+
+                {![
+                    "Overview",
+                    "Services",
+                    "API Explorer",
+                    "Logs",
+                    "Settings",
+                    "Fitness Tools",
+                ].includes(activeSection) && (
+                    <div className="dev-content">
+                        <div className="dev-page-heading">
+                            <div>
+                                <div className="dev-overline">CONTENT WORKSPACE</div>
+                                <h1>{activeSection}</h1>
+                                <p>{moduleDescriptions[activeSection] ?? "This portal module is not connected to a verified backend capability yet."}</p>
+                            </div>
+                            <span className="dev-status-badge unknown"><span />Not connected</span>
+                        </div>
+
+                        <div className="dev-notice">
+                            <ShieldCheck size={18} />
+                            <div>
+                                <strong>Portal screen only — not operational</strong>
+                                <p>No records are fabricated here. Connect the corresponding backend API and permission policy before enabling data or write actions.</p>
+                            </div>
+                        </div>
+
+                        <div className="dev-empty-state">
+                            <span className="dev-empty-icon"><Code2 size={26} /></span>
+                            <h2>No verified data source</h2>
+                            <p>Existing developer API operations are available in the fitness tools console. That console sends requests to the configured API and should only be used against an approved test environment.</p>
+                            <button className="dev-secondary-button" onClick={() => setActiveSection("Fitness Tools")}>
+                                <Terminal size={16} /> Open fitness tools console
+                            </button>
+                        </div>
+                    </div>
+                )}
             </main>
         </div>
     );

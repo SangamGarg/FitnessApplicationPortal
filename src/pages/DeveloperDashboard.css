@@ -64,8 +64,13 @@
 
 .dev-nav {
   display: grid;
+  min-height: 0;
+  flex: 1;
   gap: 5px;
   margin-top: 14px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
 }
 
 .dev-nav-item {
