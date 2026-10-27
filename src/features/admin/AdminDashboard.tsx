@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { portalLogout } from "../../lib/portalApi";
+import DeveloperManagement from "../../pages/DeveloperManagement";
 import "./AdminDashboard.css";
 
 type AdminSection =
@@ -39,6 +40,7 @@ type AdminSection =
   | "Policy and Help Center"
   | "Notifications"
   | "Audit Logs"
+  | "Developers"
   | "Staff and Access Management"
   | "Platform Settings"
   | "Support Tickets";
@@ -63,6 +65,7 @@ const navigation: { label: AdminSection; group: string; icon: LucideIcon }[] = [
   { label: "Policy and Help Center", group: "TRUST & SAFETY", icon: BookOpen },
   { label: "Notifications", group: "TRUST & SAFETY", icon: Bell },
   { label: "Audit Logs", group: "GOVERNANCE", icon: FileClock },
+  { label: "Developers", group: "GOVERNANCE", icon: Users },
   { label: "Staff and Access Management", group: "GOVERNANCE", icon: ShieldCheck },
   { label: "Platform Settings", group: "GOVERNANCE", icon: Settings },
 ];
@@ -282,7 +285,7 @@ export default function AdminDashboard() {
         </header>
 
         <div className="admin-content">
-          <div className="admin-demo-banner"><span className="admin-demo-dot" /><strong>Portal preview</strong><span>Demo fixtures only · Admin data and operational actions are not connected</span></div>
+          <div className="admin-demo-banner"><span className="admin-demo-dot" /><strong>{activeSection === "Developers" ? "Connected module" : "Portal preview"}</strong><span>{activeSection === "Developers" ? "Developer account management uses the configured portal API" : "Demo fixtures only · Admin data and operational actions are not connected"}</span></div>
 
           {activeSection === "Overview" ? (
             <>
@@ -311,6 +314,8 @@ export default function AdminDashboard() {
               </div>
               <section className="admin-panel admin-integrity-note"><ShieldCheck size={19} /><div><strong>Financial and safety actions are not enabled</strong><p>This portal preview does not modify user accounts, coin balances, payment requests, or risk decisions. Sensitive changes require backend authorization, a reason, and an auditable server-side record.</p></div></section>
             </>
+          ) : activeSection === "Developers" ? (
+            <DeveloperManagement />
           ) : (
             <>
               <div className="admin-page-heading">

@@ -18,9 +18,9 @@ for TypeScript checks and a production build, or `npm run lint` for ESLint.
 ## Authentication and existing integrations
 
 - Portal login, one-time account setup, session validation, refresh, and logout use
-  `/api/portal/auth/*`.
-- Admin developer account management uses `/api/portal/admin/developers`.
-- The Developer Fitness Tools console calls the listed `/api/portal/dev/*` endpoints.
+  `/api/v1/portal/auth/*`.
+- Admin developer account management uses `/api/v1/portal/admin/developers`.
+- The Developer Fitness Tools console calls the listed `/api/v1/portal/dev/*` endpoints.
 - Developer technical monitoring checks `/api/health`.
 - API routes are integration contracts, not a substitute for backend authorization. The
   backend must enforce permissions and validate every request.

@@ -25,10 +25,10 @@ export default function App() {
 
     let active = true;
     const bootstrap = savedToken
-      ? portalFetch("/api/portal/auth/me", { headers: { Accept: "application/json" } })
+      ? portalFetch("/api/v1/portal/auth/me", { headers: { Accept: "application/json" } })
       : refreshPortalAccessToken().then((newToken) =>
           newToken
-            ? portalFetch("/api/portal/auth/me", { headers: { Accept: "application/json" } })
+            ? portalFetch("/api/v1/portal/auth/me", { headers: { Accept: "application/json" } })
             : new Response(JSON.stringify({ message: "No active session" }), {
                 status: 401,
                 headers: { "Content-Type": "application/json" },

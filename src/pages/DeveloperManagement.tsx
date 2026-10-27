@@ -42,7 +42,7 @@ type DeveloperForm = {
 
 type FormErrors = Partial<Record<keyof DeveloperForm, string>>;
 
-const api = "/api/portal/admin/developers";
+const api = "/api/v1/portal/admin/developers";
 const INITIAL_FORM: DeveloperForm = {
   name: "",
   email: "",

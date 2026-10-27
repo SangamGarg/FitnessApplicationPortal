@@ -30,7 +30,7 @@ export async function refreshPortalAccessToken(): Promise<string | null> {
   if (refreshInFlight) return refreshInFlight;
   refreshInFlight = (async () => {
     try {
-      const response = await fetch("/api/portal/auth/refresh", {
+      const response = await fetch("/api/v1/portal/auth/refresh", {
         method: "POST",
         credentials: "same-origin",
         headers: { Accept: "application/json" },
@@ -78,7 +78,7 @@ export async function portalFetch(input: RequestInfo | URL, init: RequestInit = 
 
 export async function portalLogout(): Promise<void> {
   try {
-    await fetch("/api/portal/auth/logout", { method: "POST", credentials: "same-origin" });
+    await fetch("/api/v1/portal/auth/logout", { method: "POST", credentials: "same-origin" });
   } finally {
     clearPortalSession();
   }
