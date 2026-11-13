@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import {
     Activity,
@@ -19,6 +18,7 @@ import {
     LayoutDashboard,
     LifeBuoy,
     ListChecks,
+    LogOut,
     Search,
     Server,
     Settings,
@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import "./DeveloperDashboard.css";
 import DeveloperFeatureConsole from "./DeveloperFeatureConsole";
+import { portalLogout } from "../lib/portalApi";
 
 type DeveloperSection =
     | "Overview"
@@ -344,7 +345,19 @@ export default function DeveloperDashboard() {
                             <Bell size={18} />
                         </button>
 
-                        <span className="dev-topbar-avatar">D</span>
+                        <span className="dev-topbar-avatar">
+                            {(sessionStorage.getItem("portalName")?.trim().charAt(0) || "D").toUpperCase()}
+                        </span>
+                        <button
+                            className="portal-dev-logout"
+                            onClick={() => {
+                                void portalLogout().finally(() => {
+                                    window.location.href = "/";
+                                });
+                            }}
+                        >
+                            <LogOut size={15} /> Sign out
+                        </button>
                     </div>
                 </header>
 

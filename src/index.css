@@ -2,12 +2,18 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --portal-brand: #15966c;
-  --portal-brand-dark: #107d5b;
-  --portal-border: #e6ece8;
+  color-scheme: dark;
+  --portal-brand: #ff7b32;
+  --portal-brand-dark: #e96320;
+  --portal-cyan: #3dd7e8;
+  --portal-border: rgba(148, 163, 184, 0.16);
+  --portal-surface: rgba(17, 24, 39, 0.72);
+  --portal-surface-raised: rgba(15, 23, 42, 0.86);
+  --portal-text: #f8fafc;
+  --portal-muted: #a6b0c1;
   font-family: 'DM Sans', sans-serif;
-  color: #202338;
-  background: #f7f8fc;
+  color: var(--portal-text);
+  background: #080c14;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -24,6 +30,11 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 12% 0%, rgba(255, 107, 0, 0.13), transparent 34rem),
+    radial-gradient(ellipse at 88% 18%, rgba(34, 211, 238, 0.11), transparent 32rem),
+    radial-gradient(ellipse at 60% 100%, rgba(99, 102, 241, 0.1), transparent 40rem),
+    #080c14;
 }
 
 button,
@@ -38,8 +49,9 @@ button {
 
 button:focus-visible,
 input:focus-visible,
-select:focus-visible {
-  outline: 2px solid #7957e8;
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--portal-cyan);
   outline-offset: 2px;
 }
 
@@ -51,7 +63,23 @@ select:focus-visible {
   display: grid;
   min-height: 100vh;
   place-items: center;
-  color: #526158;
+  color: #d7e0ec;
   font-family: 'DM Sans', sans-serif;
   font-size: 13px;
+}
+
+::selection {
+  color: #fff;
+  background: rgba(255, 123, 50, 0.42);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

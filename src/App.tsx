@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import AdminDashboard from "./features/admin/AdminDashboard";
-import { portalLogout, portalFetch, refreshPortalAccessToken } from "./lib/portalApi";
+import { portalFetch, refreshPortalAccessToken } from "./lib/portalApi";
 import PortalAuthPage from "./pages/PortalAuthPage";
 import DeveloperDashboard from "./pages/DeveloperDashboard";
-import { LogOut } from "lucide-react";
 import "./portalLogout.css";
 
 type PortalRole = "ADMIN" | "DEVELOPER";
@@ -87,21 +86,7 @@ export default function App() {
   }
 
   if (selectedRole === "DEVELOPER") {
-    return (
-      <>
-        <button
-          className="portal-dev-logout"
-          onClick={() => {
-            void portalLogout().finally(() => {
-              window.location.href = "/";
-            });
-          }}
-        >
-          <LogOut size={15} /> Sign out
-        </button>
-        <DeveloperDashboard />
-      </>
-    );
+    return <DeveloperDashboard />;
   }
 
   return <AdminDashboard />;

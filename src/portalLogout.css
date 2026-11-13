@@ -1,1 +1,36 @@
-.portal-dev-logout{position:fixed;top:12px;right:16px;z-index:1000;display:flex;align-items:center;gap:7px;padding:9px 12px;border:1px solid #e4e5ef;border-radius:9px;background:#fff;color:#5c6478;font-size:11px;font-weight:700;box-shadow:0 4px 16px #1d244012;cursor:pointer}.portal-dev-logout:hover{border-color:#c8bdf8;color:#7657e8}
+.portal-dev-logout {
+  display: flex;
+  min-height: 34px;
+  align-items: center;
+  gap: 7px;
+  flex: 0 0 auto;
+  padding: 0 10px;
+  border: 1px solid rgba(148, 163, 184, 0.21);
+  border-radius: 9px;
+  color: #dce5f0;
+  background: rgba(15, 23, 42, 0.76);
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.05), 0 8px 24px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 180ms ease, border-color 180ms ease, background 180ms ease, transform 180ms ease;
+}
+
+.portal-dev-logout:hover {
+  border-color: rgba(61, 215, 232, 0.34);
+  color: #74e4ec;
+  background: rgba(17, 33, 48, 0.88);
+}
+
+.portal-dev-logout:active {
+  transform: scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portal-dev-logout {
+    transition: none;
+  }
+}
