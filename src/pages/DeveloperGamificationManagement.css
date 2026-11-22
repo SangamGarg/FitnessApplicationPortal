@@ -1,0 +1,12 @@
+.gamification-management { width:100%; max-width:1800px; }
+.gamification-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:13px; }
+.gamification-heading h1 { margin:5px 0 6px; color:#f1f5fb; font-size:clamp(25px,2.2vw,32px); letter-spacing:-1px; }
+.gamification-heading p { margin:0; color:#9aa8bb; font-size:11px; line-height:1.55; }
+.gamification-tabs { display:flex; gap:5px; margin-bottom:12px; border-bottom:1px solid rgba(148,163,184,.17); }
+.gamification-tabs button { display:inline-flex; min-height:38px; align-items:center; gap:7px; padding:0 13px; border:0; border-bottom:2px solid transparent; color:#aab6c8; background:transparent; font:inherit; font-size:10px; cursor:pointer; }
+.gamification-tabs button:hover { color:#dce5f0; }
+.gamification-tabs button.active { border-bottom-color:#ff873c; color:#ffd1b2; font-weight:750; }
+.gamification-view.hidden { display:none; }
+@media (max-width:760px) {
+  .gamification-tabs button { padding:0 10px; }
+}

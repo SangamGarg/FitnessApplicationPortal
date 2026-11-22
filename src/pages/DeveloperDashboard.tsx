@@ -4,7 +4,6 @@ import {
     ArrowUpRight,
     Award,
     Bell,
-    BookOpen,
     Bot,
     ChevronDown,
     CircleHelp,
@@ -18,7 +17,6 @@ import {
     GitBranch,
     LayoutDashboard,
     LifeBuoy,
-    ListChecks,
     Link2,
     LogOut,
     Mail,
@@ -40,6 +38,9 @@ import DeveloperEmailManagement from "./DeveloperEmailManagement";
 import DeveloperAssetsManagement from "./DeveloperAssetsManagement";
 import DeveloperBadgeManagement from "./DeveloperBadgeManagement";
 import DeveloperSupportWorkspace from "./DeveloperSupportWorkspace";
+import DeveloperExerciseManagement from "./DeveloperExerciseManagement";
+import DeveloperNutritionManagement from "./DeveloperNutritionManagement";
+import DeveloperGamificationManagement from "./DeveloperGamificationManagement";
 import { portalLogout } from "../lib/portalApi";
 
 type DeveloperSection =
@@ -49,10 +50,8 @@ type DeveloperSection =
     | "Logs"
     | "Settings"
     | "Fitness Tools"
-    | "Exercise Library CMS"
-    | "Workout Plan CMS"
-    | "Workout Content CMS"
-    | "Diet and Food Database"
+    | "Exercise Management"
+    | "Nutrition Management"
     | "Fitness Calculator Configuration"
     | "Games and Challenges Builder"
     | "Assets Management"
@@ -77,10 +76,8 @@ const navigation: {
     displayLabel?: string;
 }[] = [
         { label: "Overview", displayLabel: "Developer Overview", icon: LayoutDashboard },
-        { label: "Exercise Library CMS", icon: Dumbbell },
-        { label: "Workout Plan CMS", icon: ListChecks },
-        { label: "Workout Content CMS", icon: BookOpen },
-        { label: "Diet and Food Database", icon: Utensils },
+        { label: "Exercise Management", icon: Dumbbell },
+        { label: "Nutrition Management", icon: Utensils },
         { label: "Fitness Calculator Configuration", icon: Activity },
         { label: "Games and Challenges Builder", icon: Gamepad2 },
         { label: "Assets Management", icon: FileImage },
@@ -100,12 +97,9 @@ const navigation: {
     ];
 
 const moduleDescriptions: Partial<Record<DeveloperSection, string>> = {
-    "Exercise Library CMS": "Exercise create, update, and delete operations are available in the existing API console. Content is not published through a verified publication workflow yet.",
-    "Diet and Food Database": "Food nutrition upload and update operations are available in the existing API console. Dataset validation and import status are not connected.",
+    "Nutrition Management": "Manage the nutrition food catalog, recipes, and AI recipe generation with live backend APIs.",
     "Fitness Calculator Configuration": "Calculator records can be managed through the existing API console. Configuration versioning and validation are not connected.",
-    "Workout Plan CMS": "Workout plan authoring and exercise relationship APIs are not configured in this portal.",
-    "Workout Content CMS": "Workout content creation and publication APIs are not configured in this portal.",
-    "Games and Challenges Builder": "Game configuration, challenge authoring, and user-facing publication are not connected.",
+    "Exercise Management": "Exercise catalog and workout plan management are available through the updated exercise APIs.",
     "Assets Management": "Manage dynamic asset catalog keys, uploaded images, metadata, and status through the assets API.",
     "FAQs and Help Center": "FAQ management endpoints exist in the tools reference, but publication status and version history are not integrated.",
     "Chatbot Knowledge Management": "Chatbot knowledge ingestion, validation, and release controls are not configured.",
@@ -946,6 +940,9 @@ export default function DeveloperDashboard() {
                 {activeSection === "Email Management" && <DeveloperEmailManagement />}
                 {activeSection === "Assets Management" && <DeveloperAssetsManagement />}
                 {activeSection === "Badge Management" && <DeveloperBadgeManagement />}
+                {activeSection === "Exercise Management" && <DeveloperExerciseManagement />}
+                {activeSection === "Nutrition Management" && <DeveloperNutritionManagement />}
+                {activeSection === "Games and Challenges Builder" && <DeveloperGamificationManagement />}
 
                 {![
                     "Overview",
@@ -960,6 +957,9 @@ export default function DeveloperDashboard() {
                     "Email Management",
                     "Assets Management",
                     "Badge Management",
+                    "Exercise Management",
+                    "Nutrition Management",
+                    "Games and Challenges Builder",
                 ].includes(activeSection) && (
                     <div className="dev-content">
                         <div className="dev-page-heading">
