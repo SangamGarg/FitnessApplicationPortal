@@ -4,7 +4,7 @@ import { portalFetch } from "../lib/portalApi";
 import "./DeveloperFeatureConsole.css";
 
 type Method = "GET" | "POST" | "PATCH" | "DELETE";
-type Feature = "Exercise" | "Calculator" | "App information" | "Feedback" | "Notifications" | "Email";
+type Feature = "Exercise" | "Calculator" | "App information" | "Feedback" | "Notifications";
 type Operation = {
   id: string; feature: Feature; label: string; method: Method; path: string;
   description: string; pathHelp?: string; queryHelp?: string; body?: unknown;
@@ -41,12 +41,9 @@ const operations: Operation[] = [
   { id: "feedback-delete", feature: "Feedback", label: "Delete feedback", method: "DELETE", path: "/api/v1/portal/dev/feedback/{id}", description: "Delete a feedback entry by ID.", pathHelp: "id" },
   { id: "notification-one", feature: "Notifications", label: "Send device notification", method: "POST", path: "/api/v1/portal/dev/notification/send", description: "Send a notification to a single device. Payload fields depend on SendNotificationRequestDto.", body: { token: "DEVICE_FCM_TOKEN", title: "Fitness update", body: "Your new workout is ready" } },
   { id: "notification-batch", feature: "Notifications", label: "Send batch notification", method: "POST", path: "/api/v1/portal/dev/notification/send-batch", description: "Send a batch notification. Payload fields depend on SendBatchNotificationRequestDto.", body: { tokens: ["DEVICE_FCM_TOKEN_1", "DEVICE_FCM_TOKEN_2"], title: "Fitness update", body: "Your new workout is ready" } },
-  { id: "email-one", feature: "Email", label: "Email one user", method: "POST", path: "/api/v1/portal/dev/email/send-email-one-user", description: "Send an HTML email to one user. The backend requires name, email, subject, body, and htmlBody.", body: { name: "Alex", email: "user@example.com", subject: "Fitness update", body: "Hello from the Fitness team.", htmlBody: "<html><body><p>Hello from the Fitness team.</p></body></html>" } },
-  { id: "email-many", feature: "Email", label: "Email multiple users", method: "POST", path: "/api/v1/portal/dev/email/send-email-more-user", description: "Send an HTML email to the supplied recipient list.", body: { emails: ["user1@example.com", "user2@example.com"], subject: "Fitness update", body: "Hello from the Fitness team.", htmlBody: "<html><body><p>Hello from the Fitness team.</p></body></html>" } },
-  { id: "email-all", feature: "Email", label: "Email all users", method: "POST", path: "/api/v1/portal/dev/email/send-email-all-user", description: "The supplied backend currently sends to the emails list in the request; this does not automatically query every registered user.", body: { emails: ["user1@example.com", "user2@example.com"], subject: "Fitness update", body: "Hello from the Fitness team.", htmlBody: "<html><body><p>Hello from the Fitness team.</p></body></html>" } },
 ];
 
-const features: Feature[] = ["Exercise", "Calculator", "App information", "Feedback", "Notifications", "Email"];
+const features: Feature[] = ["Exercise", "Calculator", "App information", "Feedback", "Notifications"];
 const defaultBody = (operation: Operation) => JSON.stringify(operation.body ?? {}, null, 2);
 
 export default function DeveloperFeatureConsole() {
@@ -91,14 +88,11 @@ export default function DeveloperFeatureConsole() {
   async function execute() {
     const requiresConfirmation =
       selected.method === "DELETE" ||
-      selected.feature === "Notifications" ||
-      selected.feature === "Email";
+      selected.feature === "Notifications";
     if (requiresConfirmation) {
       const action = selected.method === "DELETE"
         ? "delete data"
-        : selected.feature === "Notifications"
-          ? "send a notification"
-          : "send email";
+        : "send a notification";
       if (!window.confirm(`Are you sure you want to ${action}? This action may affect real users or data.`)) {
         return;
       }
@@ -166,6 +160,6 @@ export default function DeveloperFeatureConsole() {
         {responseText && <pre className="dev-feature-response">{responseText}</pre>}
       </section>
     </div>
-    <p className="dev-feature-footnote"><Code2 size={14} /> The supplied backend ZIP does not include a list/read endpoint for every content type. This console exposes only the controller operations present in that ZIP; request examples for notification and email may need their field names aligned with the DTO definitions in your full backend project.</p>
+    <p className="dev-feature-footnote"><Code2 size={14} /> The supplied backend ZIP does not include a list/read endpoint for every content type. This console exposes only the controller operations present in that ZIP; notification request fields may need to be aligned with the DTO definitions in your full backend project.</p>
   </div>;
 }

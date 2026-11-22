@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
     Activity,
     ArrowUpRight,
+    Award,
     Bell,
     BookOpen,
     Bot,
@@ -18,7 +19,10 @@ import {
     LayoutDashboard,
     LifeBuoy,
     ListChecks,
+    Link2,
     LogOut,
+    Mail,
+    MessageSquareText,
     Search,
     Server,
     Settings,
@@ -30,6 +34,12 @@ import {
 } from "lucide-react";
 import "./DeveloperDashboard.css";
 import DeveloperFeatureConsole from "./DeveloperFeatureConsole";
+import DeveloperFeedbackManagement from "./DeveloperFeedbackManagement";
+import DeveloperFollowUsManagement from "./DeveloperFollowUsManagement";
+import DeveloperEmailManagement from "./DeveloperEmailManagement";
+import DeveloperAssetsManagement from "./DeveloperAssetsManagement";
+import DeveloperBadgeManagement from "./DeveloperBadgeManagement";
+import DeveloperSupportWorkspace from "./DeveloperSupportWorkspace";
 import { portalLogout } from "../lib/portalApi";
 
 type DeveloperSection =
@@ -45,11 +55,15 @@ type DeveloperSection =
     | "Diet and Food Database"
     | "Fitness Calculator Configuration"
     | "Games and Challenges Builder"
-    | "Media Asset Library"
+    | "Assets Management"
     | "FAQs and Help Center"
     | "Chatbot Knowledge Management"
     | "Content Publication and Version History"
-    | "Support Ticket Inbox";
+    | "Support Center"
+    | "Feedback Management"
+    | "App Follow Us"
+    | "Email Management"
+    | "Badge Management";
 
 type HealthStatus = "checking" | "up" | "down";
 
@@ -69,14 +83,18 @@ const navigation: {
         { label: "Diet and Food Database", icon: Utensils },
         { label: "Fitness Calculator Configuration", icon: Activity },
         { label: "Games and Challenges Builder", icon: Gamepad2 },
-        { label: "Media Asset Library", icon: FileImage },
+        { label: "Assets Management", icon: FileImage },
         { label: "FAQs and Help Center", icon: CircleHelp },
         { label: "Chatbot Knowledge Management", icon: Bot },
         { label: "API Explorer", displayLabel: "API Explorer and Documentation", icon: Code2 },
         { label: "Content Publication and Version History", icon: FileCode2 },
         { label: "Services", displayLabel: "Technical Monitoring", icon: Server },
         { label: "Settings", displayLabel: "Developer Settings", icon: Settings },
-        { label: "Support Ticket Inbox", icon: LifeBuoy },
+        { label: "Support Center", icon: LifeBuoy },
+        { label: "Feedback Management", icon: MessageSquareText },
+        { label: "App Follow Us", icon: Link2 },
+        { label: "Email Management", icon: Mail },
+        { label: "Badge Management", icon: Award },
         { label: "Logs", icon: FileCode2 },
         { label: "Fitness Tools", displayLabel: "Fitness Tools Console", icon: Terminal },
     ];
@@ -88,11 +106,11 @@ const moduleDescriptions: Partial<Record<DeveloperSection, string>> = {
     "Workout Plan CMS": "Workout plan authoring and exercise relationship APIs are not configured in this portal.",
     "Workout Content CMS": "Workout content creation and publication APIs are not configured in this portal.",
     "Games and Challenges Builder": "Game configuration, challenge authoring, and user-facing publication are not connected.",
-    "Media Asset Library": "Media upload, storage, moderation, and metadata APIs are not configured.",
+    "Assets Management": "Manage dynamic asset catalog keys, uploaded images, metadata, and status through the assets API.",
     "FAQs and Help Center": "FAQ management endpoints exist in the tools reference, but publication status and version history are not integrated.",
     "Chatbot Knowledge Management": "Chatbot knowledge ingestion, validation, and release controls are not configured.",
     "Content Publication and Version History": "No content publishing or version-history service is connected.",
-    "Support Ticket Inbox": "Ticket assignment, replies, and status updates require a support service that is not connected.",
+    "Support Center": "App information, FAQ management, and support ticket operations are available through the Support API.",
 };
 
 const endpoints = [
@@ -118,7 +136,8 @@ const endpoints = [
     { method: "POST", path: "/api/v1/portal/dev/calculator/upload-calories-in-food", description: "Upload food nutrition", status: "Fitness tools" },
     { method: "GET", path: "/api/v1/portal/dev/feedback/all", description: "Read feedback", status: "Fitness tools" },
     { method: "POST", path: "/api/v1/portal/dev/notification/send", description: "Send device notification", status: "Fitness tools" },
-    { method: "POST", path: "/api/v1/portal/dev/email/send-email-one-user", description: "Send user email", status: "Fitness tools" },
+    { method: "POST", path: "/api/v1/portal/dev/email/send", description: "Send email to one, selected, or all active users", status: "Email management" },
+    { method: "GET", path: "/api/v1/portal/dev/assets/keys", description: "Fetch asset catalog definitions", status: "Assets management" },
 ];
 
 const services = [
@@ -269,8 +288,7 @@ export default function DeveloperDashboard() {
                             key={label}
                             aria-label={displayLabel ?? label}
                             title={displayLabel ?? label}
-                            className={`dev-nav-item ${activeSection === label ? "active" : ""
-                                }`}
+                            className={`dev-nav-item ${activeSection === label ? "active" : ""}`}
                             onClick={() => setActiveSection(label)}
                         >
                             <Icon size={18} />
@@ -922,6 +940,12 @@ export default function DeveloperDashboard() {
 
                 {/* FITNESS BACKEND TOOLS */}
                 {activeSection === "Fitness Tools" && <DeveloperFeatureConsole />}
+                {activeSection === "Support Center" && <DeveloperSupportWorkspace />}
+                {activeSection === "Feedback Management" && <DeveloperFeedbackManagement />}
+                {activeSection === "App Follow Us" && <DeveloperFollowUsManagement />}
+                {activeSection === "Email Management" && <DeveloperEmailManagement />}
+                {activeSection === "Assets Management" && <DeveloperAssetsManagement />}
+                {activeSection === "Badge Management" && <DeveloperBadgeManagement />}
 
                 {![
                     "Overview",
@@ -930,6 +954,12 @@ export default function DeveloperDashboard() {
                     "Logs",
                     "Settings",
                     "Fitness Tools",
+                    "Support Center",
+                    "Feedback Management",
+                    "App Follow Us",
+                    "Email Management",
+                    "Assets Management",
+                    "Badge Management",
                 ].includes(activeSection) && (
                     <div className="dev-content">
                         <div className="dev-page-heading">

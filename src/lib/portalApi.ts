@@ -43,7 +43,6 @@ export async function refreshPortalAccessToken(): Promise<string | null> {
       saveSession(session);
       return session.accessToken;
     } catch {
-      // A failed refresh means the client cannot establish a fresh authenticated session.
       clearPortalSession();
       return null;
     } finally {
@@ -56,8 +55,9 @@ export async function refreshPortalAccessToken(): Promise<string | null> {
 export async function portalFetch(input: RequestInfo | URL, init: RequestInit = {}): Promise<Response> {
   const perform = (accessToken: string) => {
     const headers = new Headers(init.headers);
-    headers.set("Authorization", `Bearer ${accessToken}`);
-    if (init.body && !headers.has("Content-Type")) headers.set("Content-Type", "application/json");
+    headers.set("Authorization", "Bearer " + accessToken);
+    const isFormData = typeof FormData !== "undefined" && init.body instanceof FormData;
+    if (init.body && !isFormData && !headers.has("Content-Type")) headers.set("Content-Type", "application/json");
     return fetch(input, { ...init, headers, credentials: "same-origin" });
   };
 
