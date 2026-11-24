@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { FormEvent, ChangeEvent } from "react";
+import { createPortal } from "react-dom";
 import {
   Check,
   ChevronDown,
@@ -30,7 +31,7 @@ type Developer = {
   address?: string | null;
 };
 
-type Gender = "" | "MALE" | "FEMALE" | "OTHER";
+type Gender = "" | "MALE" | "FEMALE" | "OTHER" | "PREFER_NOT_TO_SAY";
 
 type DeveloperForm = {
   name: string;
@@ -50,6 +51,65 @@ const INITIAL_FORM: DeveloperForm = {
   gender: "",
   address: "",
 };
+
+function DeveloperActionsMenu({ developer, busy, onAction }: { developer: Developer; busy: boolean; onAction: (developer: Developer, type: "reset-password" | "status" | "delete") => void }) {
+  const [position, setPosition] = useState<{ top: number; left: number } | null>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!position) return;
+    function onPointerDown(event: PointerEvent) {
+      if (event.target instanceof Node && !triggerRef.current?.contains(event.target) && !popoverRef.current?.contains(event.target)) setPosition(null);
+    }
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setPosition(null);
+    }
+    function closeOnViewportChange() { setPosition(null); }
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    window.addEventListener("resize", closeOnViewportChange);
+    window.addEventListener("scroll", closeOnViewportChange, true);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("resize", closeOnViewportChange);
+      window.removeEventListener("scroll", closeOnViewportChange, true);
+    };
+  }, [position]);
+
+  function toggleMenu() {
+    if (position) {
+      setPosition(null);
+      return;
+    }
+    const rect = triggerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const width = 236;
+    const height = 142;
+    setPosition({
+      top: rect.bottom + height + 8 > window.innerHeight ? Math.max(8, rect.top - height - 8) : rect.bottom + 8,
+      left: Math.max(8, Math.min(rect.right - width, window.innerWidth - width - 8)),
+    });
+  }
+
+  function chooseAction(type: "reset-password" | "status" | "delete") {
+    setPosition(null);
+    onAction(developer, type);
+  }
+
+  return <>
+    <button ref={triggerRef} type="button" className={`devmgmt-menu-trigger ${position ? "is-open" : ""}`} aria-label={`Actions for ${developer.name}`} aria-haspopup="menu" aria-expanded={Boolean(position)} onClick={toggleMenu}><MoreHorizontal size={18} /></button>
+    {position && createPortal(
+      <div ref={popoverRef} className="devmgmt-menu-popover devmgmt-menu-portal" role="menu" style={{ top: position.top, left: position.left }}>
+        <button type="button" role="menuitem" disabled={busy} onClick={() => chooseAction("reset-password")}><Mail size={15} /> Send password setup link</button>
+        <button type="button" role="menuitem" disabled={busy} onClick={() => chooseAction("status")}><ShieldCheck size={15} />{developer.status === "DISABLED" ? "Enable account" : "Disable account"}</button>
+        <button type="button" role="menuitem" className="danger" disabled={busy} onClick={() => chooseAction("delete")}><Trash2 size={15} /> Delete developer</button>
+      </div>,
+      document.body,
+    )}
+  </>;
+}
 
 async function request(path = "", init: RequestInit = {}) {
   const response = await portalFetch(`${api}${path}`, {
@@ -339,7 +399,6 @@ export default function DeveloperManagement() {
         <div className="devmgmt-panel-top">
           <div>
             <h3>All developers</h3>
-            <p>Only Admins can create accounts or change developer access.</p>
           </div>
           <button
             className="devmgmt-icon-button"
@@ -409,14 +468,9 @@ export default function DeveloperManagement() {
                       {d.createdAt ? new Date(d.createdAt).toLocaleDateString() : "—"}
                     </td>
                     <td>
-                      <details className="devmgmt-menu">
-                        <summary aria-label={`Actions for ${d.name}`}><MoreHorizontal size={18} /></summary>
-                        <div className="devmgmt-menu-popover">
-                          <button type="button" disabled={busyId === d.id} onClick={() => void action(d, "reset-password")}><Mail size={15} /> Send password setup link</button>
-                          <button type="button" disabled={busyId === d.id} onClick={() => void action(d, "status")}><ShieldCheck size={15} />{d.status === "DISABLED" ? "Enable account" : "Disable account"}</button>
-                          <button type="button" className="danger" disabled={busyId === d.id} onClick={() => void action(d, "delete")}><Trash2 size={15} /> Delete developer</button>
-                        </div>
-                      </details>
+                      <div className="devmgmt-menu">
+                        <DeveloperActionsMenu developer={d} busy={busyId === d.id} onAction={(developer, type) => void action(developer, type)} />
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -474,7 +528,7 @@ export default function DeveloperManagement() {
 
             <form onSubmit={create} className="devmgmt-create-form" noValidate>
               <label>
-                Full name <span aria-hidden="true">*</span>
+                <span className="devmgmt-label-copy">Full name <span aria-hidden="true">*</span></span>
                 <input
                   autoFocus
                   className={fieldClass("name")}
@@ -491,7 +545,7 @@ export default function DeveloperManagement() {
               </label>
 
               <label>
-                Work email <span aria-hidden="true">*</span>
+                <span className="devmgmt-label-copy">Work email <span aria-hidden="true">*</span></span>
                 <input
                   className={fieldClass("email")}
                   required
@@ -508,7 +562,7 @@ export default function DeveloperManagement() {
               </label>
 
               <label>
-                Mobile number <span aria-hidden="true">*</span>
+                <span className="devmgmt-label-copy">Mobile number <span aria-hidden="true">*</span></span>
                 <input
                   className={fieldClass("mobileNumber")}
                   required
@@ -527,10 +581,10 @@ export default function DeveloperManagement() {
                 {fieldErrors.mobileNumber && <small className="devmgmt-field-error" id="developer-mobile-error">{fieldErrors.mobileNumber}</small>}
               </label>
 
-              <label>
-                Gender <span aria-hidden="true">*</span>
+              <label className="devmgmt-field-gender">
+                <span className="devmgmt-label-copy">Gender <span aria-hidden="true">*</span></span>
                 <select
-                  className={fieldClass("gender")}
+                  className={`${fieldClass("gender")} devmgmt-gender-select`}
                   required
                   value={formData.gender}
                   onChange={(e: ChangeEvent<HTMLSelectElement>) => updateField("gender", e.target.value as Gender)}
@@ -541,12 +595,13 @@ export default function DeveloperManagement() {
                   <option value="MALE">Male</option>
                   <option value="FEMALE">Female</option>
                   <option value="OTHER">Other</option>
+                  <option value="PREFER_NOT_TO_SAY">Prefer not to say</option>
                 </select>
                 {fieldErrors.gender && <small className="devmgmt-field-error" id="developer-gender-error">{fieldErrors.gender}</small>}
               </label>
 
-              <label>
-                Address <span aria-hidden="true">*</span>
+              <label className="devmgmt-field-address">
+                <span className="devmgmt-label-copy">Address <span aria-hidden="true">*</span></span>
                 <textarea
                   className={fieldClass("address")}
                   required

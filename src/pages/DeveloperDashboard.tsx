@@ -4,37 +4,31 @@ import {
     ArrowUpRight,
     Award,
     Bell,
-    Bot,
-    ChevronDown,
-    CircleHelp,
     Code2,
+    CircleHelp,
+    FileCode2,
+    Settings,
     Database,
     Dumbbell,
-    FileCode2,
     FileImage,
-    Gauge,
     Gamepad2,
-    GitBranch,
     LayoutDashboard,
     LifeBuoy,
     Link2,
     LogOut,
     Mail,
     MessageSquareText,
+    BellRing,
     Search,
-    Server,
-    Settings,
     ShieldCheck,
-    Terminal,
     Utensils,
-    Wifi,
     XCircle,
 } from "lucide-react";
 import "./DeveloperDashboard.css";
-import DeveloperFeatureConsole from "./DeveloperFeatureConsole";
 import DeveloperFeedbackManagement from "./DeveloperFeedbackManagement";
 import DeveloperFollowUsManagement from "./DeveloperFollowUsManagement";
 import DeveloperEmailManagement from "./DeveloperEmailManagement";
+import DeveloperNotificationManagement from "./DeveloperNotificationManagement";
 import DeveloperAssetsManagement from "./DeveloperAssetsManagement";
 import DeveloperBadgeManagement from "./DeveloperBadgeManagement";
 import DeveloperSupportWorkspace from "./DeveloperSupportWorkspace";
@@ -42,223 +36,176 @@ import DeveloperExerciseManagement from "./DeveloperExerciseManagement";
 import DeveloperNutritionManagement from "./DeveloperNutritionManagement";
 import DeveloperGamificationManagement from "./DeveloperGamificationManagement";
 import { portalLogout } from "../lib/portalApi";
+import PlatformOverview from "./PlatformOverview";
+import DeveloperLogsPage from "./DeveloperLogsPage";
 
 type DeveloperSection =
     | "Overview"
-    | "Services"
     | "API Explorer"
     | "Logs"
     | "Settings"
-    | "Fitness Tools"
     | "Exercise Management"
     | "Nutrition Management"
-    | "Fitness Calculator Configuration"
+    | "Analytics Management"
     | "Games and Challenges Builder"
     | "Assets Management"
-    | "FAQs and Help Center"
-    | "Chatbot Knowledge Management"
-    | "Content Publication and Version History"
     | "Support Center"
     | "Feedback Management"
     | "App Follow Us"
     | "Email Management"
+    | "Notification Management"
     | "Badge Management";
-
-type HealthStatus = "checking" | "up" | "down";
-
-type HealthResponse = {
-    status?: string;
-};
 
 const navigation: {
     label: DeveloperSection;
     icon: typeof LayoutDashboard;
     displayLabel?: string;
 }[] = [
-        { label: "Overview", displayLabel: "Developer Overview", icon: LayoutDashboard },
+        { label: "Overview", displayLabel: "Platform Overview", icon: LayoutDashboard },
+                { label: "Logs", icon: FileCode2 },
+        { label: "Analytics Management", icon: Activity },
         { label: "Exercise Management", icon: Dumbbell },
         { label: "Nutrition Management", icon: Utensils },
-        { label: "Fitness Calculator Configuration", icon: Activity },
         { label: "Games and Challenges Builder", icon: Gamepad2 },
         { label: "Assets Management", icon: FileImage },
-        { label: "FAQs and Help Center", icon: CircleHelp },
-        { label: "Chatbot Knowledge Management", icon: Bot },
-        { label: "API Explorer", displayLabel: "API Explorer and Documentation", icon: Code2 },
-        { label: "Content Publication and Version History", icon: FileCode2 },
-        { label: "Services", displayLabel: "Technical Monitoring", icon: Server },
-        { label: "Settings", displayLabel: "Developer Settings", icon: Settings },
         { label: "Support Center", icon: LifeBuoy },
         { label: "Feedback Management", icon: MessageSquareText },
         { label: "App Follow Us", icon: Link2 },
         { label: "Email Management", icon: Mail },
+        { label: "Notification Management", icon: BellRing },
         { label: "Badge Management", icon: Award },
-        { label: "Logs", icon: FileCode2 },
-        { label: "Fitness Tools", displayLabel: "Fitness Tools Console", icon: Terminal },
     ];
 
 const moduleDescriptions: Partial<Record<DeveloperSection, string>> = {
     "Nutrition Management": "Manage the nutrition food catalog, recipes, and AI recipe generation with live backend APIs.",
-    "Fitness Calculator Configuration": "Calculator records can be managed through the existing API console. Configuration versioning and validation are not connected.",
+    "Analytics Management": "Calculator records can be managed through the existing API console. Configuration versioning and validation are not connected.",
     "Exercise Management": "Exercise catalog and workout plan management are available through the updated exercise APIs.",
     "Assets Management": "Manage dynamic asset catalog keys, uploaded images, metadata, and status through the assets API.",
-    "FAQs and Help Center": "FAQ management endpoints exist in the tools reference, but publication status and version history are not integrated.",
-    "Chatbot Knowledge Management": "Chatbot knowledge ingestion, validation, and release controls are not configured.",
-    "Content Publication and Version History": "No content publishing or version-history service is connected.",
     "Support Center": "App information, FAQ management, and support ticket operations are available through the Support API.",
 };
 
-const endpoints = [
-    {
-        method: "POST",
-        path: "/api/v1/portal/user/loginRegister",
-        description: "User authentication",
-        status: "Authentication flow",
-    },
-    {
-        method: "POST",
-        path: "/api/v1/portal/user/refresh-token",
-        description: "Refresh access token",
-        status: "Authentication flow",
-    },
-    {
-        method: "PATCH",
-        path: "/api/v1/portal/dev/exercise/patch/category",
-        description: "Update exercise category",
-        status: "JWT protected",
-    },
-    { method: "POST", path: "/api/v1/portal/dev/exercise/upload/category", description: "Create exercise category", status: "Fitness tools" },
-    { method: "POST", path: "/api/v1/portal/dev/calculator/upload-calories-in-food", description: "Upload food nutrition", status: "Fitness tools" },
-    { method: "GET", path: "/api/v1/portal/dev/feedback/all", description: "Read feedback", status: "Fitness tools" },
-    { method: "POST", path: "/api/v1/portal/dev/notification/send", description: "Send device notification", status: "Fitness tools" },
-    { method: "POST", path: "/api/v1/portal/dev/email/send", description: "Send email to one, selected, or all active users", status: "Email management" },
-    { method: "GET", path: "/api/v1/portal/dev/assets/keys", description: "Fetch asset catalog definitions", status: "Assets management" },
-];
-
-const services = [
-    {
-        name: "Spring Boot API",
-        description: "Java backend",
-        detail: "localhost:8080",
-    },
-    {
-        name: "PostgreSQL",
-        description: "Application database",
-        detail: "appfitness",
-    },
-    {
-        name: "Firebase",
-        description: "Authentication and app services",
-        detail: "Cloud",
-    },
+const endpoints: { method: string; path: string; module: string; description: string; status: string; expectedResponse?: string }[] = [
+    { method: "GET", path: "/api/v1/portal/dev/exercise/catalog", module: "Exercise", description: "Fetch paginated exercise catalog", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/dev/exercise/catalog/{id}", module: "Exercise", description: "Fetch exercise details", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/dev/exercise/catalog", module: "Exercise", description: "Create exercise", status: "Integrated frontend reference" },
+    { method: "PUT", path: "/api/v1/portal/dev/exercise/catalog/{id}", module: "Exercise", description: "Update exercise", status: "Integrated frontend reference" },
+    { method: "DELETE", path: "/api/v1/portal/dev/exercise/catalog/{id}", module: "Exercise", description: "Delete exercise", status: "Integrated frontend reference" },
+    { method: "PATCH", path: "/api/v1/portal/dev/exercise/catalog/{id}/publication?published={boolean}", module: "Exercise", description: "Update exercise publication status", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/dev/exercise/workout-plans", module: "Exercise", description: "Fetch workout plans", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/dev/exercise/workout-plans/{id}", module: "Exercise", description: "Fetch workout plan details", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/dev/exercise/workout-plans", module: "Exercise", description: "Create workout plan", status: "Integrated frontend reference" },
+    { method: "PUT", path: "/api/v1/portal/dev/exercise/workout-plans/{id}", module: "Exercise", description: "Update workout plan", status: "Integrated frontend reference" },
+    { method: "DELETE", path: "/api/v1/portal/dev/exercise/workout-plans/{id}", module: "Exercise", description: "Delete workout plan", status: "Integrated frontend reference" },
+    { method: "PATCH", path: "/api/v1/portal/dev/exercise/workout-plans/{id}/publication?published={boolean}", module: "Exercise", description: "Update workout plan publication", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/dev/nutrition/foods", module: "Nutrition", description: "Search and paginate foods", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/dev/nutrition/foods", module: "Nutrition", description: "Create food", status: "Integrated frontend reference" },
+    { method: "PUT", path: "/api/v1/portal/dev/nutrition/foods/{id}", module: "Nutrition", description: "Update food", status: "Integrated frontend reference" },
+    { method: "DELETE", path: "/api/v1/portal/dev/nutrition/foods/{id}", module: "Nutrition", description: "Delete food", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/dev/nutrition/recipes", module: "Nutrition", description: "Search and paginate recipes", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/dev/nutrition/recipes/{id}", module: "Nutrition", description: "Get recipe details", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/dev/nutrition/recipes", module: "Nutrition", description: "Create or save recipe", status: "Integrated frontend reference" },
+    { method: "PUT", path: "/api/v1/portal/dev/nutrition/recipes/{id}", module: "Nutrition", description: "Update recipe", status: "Integrated frontend reference" },
+    { method: "DELETE", path: "/api/v1/portal/dev/nutrition/recipes/{id}", module: "Nutrition", description: "Delete recipe", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/dev/nutrition/recipes/generate", module: "Nutrition", description: "Generate AI recipes", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/dev/challenge", module: "Challenges", description: "List challenges", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/dev/challenge", module: "Challenges", description: "Create challenge", status: "Integrated frontend reference" },
+    { method: "PUT", path: "/api/v1/portal/dev/challenge/{id}", module: "Challenges", description: "Replace/update challenge", status: "Integrated frontend reference" },
+    { method: "PATCH", path: "/api/v1/portal/dev/challenge/{id}", module: "Challenges", description: "Partial update challenge", status: "Integrated frontend reference" },
+    { method: "PATCH", path: "/api/v1/portal/dev/challenge/{id}/status", module: "Challenges", description: "Update challenge status", status: "Integrated frontend reference" },
+    { method: "DELETE", path: "/api/v1/portal/dev/challenge/{id}", module: "Challenges", description: "Delete challenge", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/dev/gamification/games", module: "Games", description: "List games", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/dev/gamification/games", module: "Games", description: "Create game with media (multipart)", status: "Integrated frontend reference" },
+    { method: "PATCH", path: "/api/v1/portal/dev/gamification/games/{gameType}", module: "Games", description: "Patch game with optional media (multipart)", status: "Integrated frontend reference" },
+    { method: "PATCH", path: "/api/v1/portal/dev/gamification/games/{gameType}/status?active={boolean}", module: "Games", description: "Update game status", status: "Integrated frontend reference" },
+    { method: "DELETE", path: "/api/v1/portal/dev/gamification/games/{gameType}", module: "Games", description: "Delete game", status: "Integrated frontend reference" },
+    { method: "PATCH", path: "/api/v1/portal/dev/gamification/games/{gameType}/deactivate", module: "Games", description: "Deactivate game", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/dev/assets/categories", module: "Assets", description: "List asset categories", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/dev/assets/keys", module: "Assets", description: "List asset keys", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/dev/assets/keys", module: "Assets", description: "Create asset key", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/dev/assets/keys/batch", module: "Assets", description: "Create asset keys in batch", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/dev/assets/upload", module: "Assets", description: "Upload asset media", status: "Integrated frontend reference" },
+    { method: "PATCH", path: "/api/v1/portal/dev/assets/{assetKey}/image", module: "Assets", description: "Replace asset image", status: "Integrated frontend reference" },
+    { method: "PATCH", path: "/api/v1/portal/dev/assets/{assetKey}/metadata", module: "Assets", description: "Update asset metadata", status: "Integrated frontend reference" },
+    { method: "PATCH", path: "/api/v1/portal/dev/assets/{assetKey}/status?isActive={boolean}", module: "Assets", description: "Update asset active state", status: "Integrated frontend reference" },
+    { method: "PATCH", path: "/api/v1/portal/dev/assets/keys/{assetKey}/status?enabled={boolean}", module: "Assets", description: "Update asset key enabled state", status: "Integrated frontend reference" },
+    { method: "DELETE", path: "/api/v1/portal/dev/assets/{assetKey}/image", module: "Assets", description: "Delete asset image", status: "Integrated frontend reference" },
+    { method: "DELETE", path: "/api/v1/portal/dev/assets/keys/{assetKey}", module: "Assets", description: "Delete asset key", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/dev/app-profile/badges", module: "Badges", description: "List badges", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/dev/app-profile/badges/{id}", module: "Badges", description: "Get badge details", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/dev/app-profile/add-badges", module: "Badges", description: "Create badge", status: "Integrated frontend reference" },
+    { method: "PATCH", path: "/api/v1/portal/dev/app-profile/badges/{id}", module: "Badges", description: "Update badge metadata", status: "Integrated frontend reference" },
+    { method: "PATCH", path: "/api/v1/portal/dev/app-profile/badges/{id}/status", module: "Badges", description: "Update badge status", status: "Integrated frontend reference" },
+    { method: "DELETE", path: "/api/v1/portal/dev/app-profile/badges/{id}", module: "Badges", description: "Delete badge", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/dev/support/info-portal", module: "Support", description: "Fetch support information", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/dev/support/get-faqs", module: "Support", description: "Fetch FAQs", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/dev/support/upload/about", module: "Support", description: "Create About content", status: "Integrated frontend reference" },
+    { method: "PATCH", path: "/api/v1/portal/dev/support/patch/about", module: "Support", description: "Update About content", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/dev/support/upload/privacy-policy", module: "Support", description: "Create privacy policy", status: "Integrated frontend reference" },
+    { method: "PATCH", path: "/api/v1/portal/dev/support/patch/privacy-policy", module: "Support", description: "Update privacy policy", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/dev/support/upload/terms-condition", module: "Support", description: "Create terms and conditions", status: "Integrated frontend reference" },
+    { method: "PATCH", path: "/api/v1/portal/dev/support/patch/terms-condition", module: "Support", description: "Update terms and conditions", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/dev/support/upload/faqs", module: "Support", description: "Upload FAQs", status: "Integrated frontend reference" },
+    { method: "PATCH", path: "/api/v1/portal/dev/support/patch/faqs/{id}", module: "Support", description: "Update FAQ", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/dev/support/upload/faqs/category", module: "Support", description: "Create FAQ category", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/dev/support/tickets", module: "Support", description: "List/filter support tickets", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/dev/support/tickets/{ticketNumber}", module: "Support", description: "Get ticket details", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/dev/support/tickets/{ticketNumber}/messages", module: "Support", description: "Get ticket messages", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/dev/support/tickets/{ticketNumber}/messages", module: "Support", description: "Send ticket message or note", status: "Integrated frontend reference" },
+    { method: "PATCH", path: "/api/v1/portal/dev/support/tickets/{ticketNumber}/status", module: "Support", description: "Update ticket status", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/dev/feedback", module: "Feedback", description: "List feedback with pagination/filter", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/dev/feedback/user/{userId}", module: "Feedback", description: "Get feedback by user", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/dev/feedback/all", module: "Feedback", description: "Get all feedback", status: "Integrated frontend reference" },
+    { method: "DELETE", path: "/api/v1/portal/dev/feedback/{id}", module: "Feedback", description: "Delete feedback", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/dev/follow-us/get-links", module: "Follow Us", description: "Get app social links", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/dev/follow-us/upload/links", module: "Follow Us", description: "Upload social links", status: "Integrated frontend reference" },
+    { method: "PATCH", path: "/api/v1/portal/dev/follow-us/links/{id}", module: "Follow Us", description: "Update social link", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/dev/email/send", module: "Email", description: "Send email", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/dev/notification/users", module: "Notifications", description: "Fetch app users for notification recipient selection", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/dev/notification/user/send?userEmail={email}", module: "Notifications", description: "Send to one directory user; title ≤200, body ≤2000, data ≤50 string entries", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/dev/notification/users/bulk", module: "Notifications", description: "Send to selected emails using { email: string[], notification: FcmNotificationRequest }", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/dev/notification/history?page=0&size=20&status={status}", module: "Notifications", description: "Fetch newest-first page; status is optional PENDING, PROCESSING, RETRY_WAIT, SENT, NO_DEVICES, FAILED", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/dev/notification/history/analytics", module: "Notifications", description: "Fetch PortalNotificationAnalytics delivery metrics", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/auth/login", module: "Portal Authentication", description: "Portal login", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/auth/setup", module: "Portal Authentication", description: "Portal setup", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/auth/refresh", module: "Portal Authentication", description: "Refresh portal session", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/auth/logout", module: "Portal Authentication", description: "Portal logout", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/overview/live", module: "Health", description: "Application liveness check", status: "200 OK", expectedResponse: "{ status, checkedAt }" },
+    { method: "GET", path: "/api/v1/portal/overview/ready", module: "Health", description: "Application readiness and database connectivity check", status: "200 OK · 503 Service Unavailable", expectedResponse: "{ status, database, databaseLatencyMs?, checkedAt }" },
+    { method: "GET", path: "/api/v1/portal/overview", module: "Health", description: "Detailed application, database, JVM and connection pool health", status: "200 OK · 503 Service Unavailable", expectedResponse: "{ status, checkedAt, uptimeMs, database, jvm }" },
+    { method: "GET", path: "/api/v1/portal/overview/api-latency", module: "Health", description: "Application API request count and latency metrics", status: "200 OK", expectedResponse: "{ measuredAt, requestCount, averageLatencyMs, maximumLatencyMs }" },
+    { method: "GET", path: "/api/v1/portal/admin/mobile-users", module: "Mobile Users", description: "Search and paginate mobile application accounts", status: "200 OK · 401 Unauthorized · 403 Forbidden", expectedResponse: "Spring Page<MobileUserAdminResponseDto>" },
+    { method: "GET", path: "/api/v1/portal/admin/mobile-users/{id}", module: "Mobile Users", description: "Fetch mobile user profile and account details", status: "200 OK · 401 Unauthorized · 403 Forbidden · 404 Not Found", expectedResponse: "MobileUserAdminResponseDto" },
+    { method: "PATCH", path: "/api/v1/portal/admin/mobile-users/{id}/status", module: "Mobile Users", description: "Update a mobile user's account status", status: "200 OK · 400 Bad Request · 401 Unauthorized · 403 Forbidden · 404 Not Found", expectedResponse: "MobileUserAdminResponseDto" }
 ];
 
 export default function DeveloperDashboard() {
-    const [activeSection, setActiveSection] =
-        useState<DeveloperSection>("Overview");
-
-    const [search, setSearch] = useState("");
-
-    const [healthStatus, setHealthStatus] =
-        useState<HealthStatus>("checking");
-
-    const [lastHealthCheck, setLastHealthCheck] =
-        useState<Date | null>(null);
-
-    const [healthMessage, setHealthMessage] = useState("");
-
-    // Check the Spring Boot health endpoint on load and every 2 Minutes.
-    useEffect(() => {
-        let mounted = true;
-
-        async function checkHealth() {
-            try {
-                const response = await fetch("/api/health", {
-                    headers: {
-                        Accept: "application/json",
-                    },
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Health endpoint returned ${response.status}`);
-                }
-
-                const data: HealthResponse = await response.json();
-
-                if (!mounted) {
-                    return;
-                }
-
-                if (data.status?.toUpperCase() === "UP") {
-                    setHealthStatus("up");
-                    setHealthMessage("");
-                } else {
-                    setHealthStatus("down");
-                    setHealthMessage("Unexpected health response");
-                }
-
-                setLastHealthCheck(new Date());
-            } catch (error) {
-                if (!mounted) {
-                    return;
-                }
-
-                setHealthStatus("down");
-                setHealthMessage(
-                    error instanceof Error
-                        ? error.message
-                        : "Unable to reach the health endpoint",
-                );
-                setLastHealthCheck(new Date());
-            }
-        }
-
-        void checkHealth();
-
-        const intervalId = window.setInterval(() => {
-            void checkHealth();
-        }, 120_000);
-
-        return () => {
-            mounted = false;
-            window.clearInterval(intervalId);
-        };
-    }, []);
-
-    const filteredEndpoints = endpoints.filter((endpoint) =>
-        `${endpoint.method} ${endpoint.path} ${endpoint.description}`
-            .toLowerCase()
-            .includes(search.toLowerCase()),
+    const [activeSection, setActiveSection] = useState<DeveloperSection>(() =>
+        window.location.pathname.replace(/\/$/, "") === "/developer/logs" ? "Logs" : "Overview",
     );
 
-    function renderHealthBadge() {
-        const badgeClass =
-            healthStatus === "up"
-                ? "online"
-                : healthStatus === "down"
-                    ? "offline"
-                    : "checking";
+    useEffect(() => {
+        const syncLocation = () => setActiveSection(window.location.pathname.replace(/\/$/, "") === "/developer/logs" ? "Logs" : "Overview");
+        window.addEventListener("popstate", syncLocation);
+        return () => window.removeEventListener("popstate", syncLocation);
+    }, []);
 
-        const badgeText =
-            healthStatus === "up"
-                ? "Online"
-                : healthStatus === "down"
-                    ? "Unavailable"
-                    : "Checking";
+    const navigateToSection = (section: DeveloperSection) => {
+        setActiveSection(section);
+        const path = section === "Logs" ? "/developer/logs" : "/";
+        if (window.location.pathname !== path) window.history.pushState({}, "", path);
+    };
 
-        return (
-            <span
-                className={`dev-status-badge ${badgeClass}`}
-                title={
-                    lastHealthCheck
-                        ? `Last checked at ${lastHealthCheck.toLocaleTimeString()}`
-                        : "Health check in progress"
-                }
-            >
-                <span />
-                {badgeText}
-            </span>
-        );
-    }
+    const [search, setSearch] = useState("");
+    const [apiModuleFilter, setApiModuleFilter] = useState("All modules");
+    const [apiMethodFilter, setApiMethodFilter] = useState("All methods");
+
+    const filteredEndpoints = endpoints.filter((endpoint) =>
+        `${endpoint.method} ${endpoint.path} ${endpoint.description} ${endpoint.module}`
+            .toLowerCase()
+            .includes(search.toLowerCase()) &&
+        (apiModuleFilter === "All modules" || endpoint.module === apiModuleFilter) &&
+        (apiMethodFilter === "All methods" || endpoint.method === apiMethodFilter),
+    );
 
     return (
         <div className="dev-portal">
@@ -270,11 +217,11 @@ export default function DeveloperDashboard() {
 
                     <span>
                         <strong>MusclePlay</strong>
-                        <small>Developer workspace</small>
+                        <small>Developer Portal</small>
                     </span>
                 </div>
 
-                <div className="dev-workspace-label">WORKSPACE</div>
+                <div className="dev-workspace-label">DEV OPTIONS</div>
 
                 <nav className="dev-nav" aria-label="Developer navigation">
                     {navigation.map(({ label, displayLabel, icon: Icon }) => (
@@ -283,7 +230,7 @@ export default function DeveloperDashboard() {
                             aria-label={displayLabel ?? label}
                             title={displayLabel ?? label}
                             className={`dev-nav-item ${activeSection === label ? "active" : ""}`}
-                            onClick={() => setActiveSection(label)}
+                            onClick={() => navigateToSection(label)}
                         >
                             <Icon size={18} />
                             <span>{displayLabel ?? label}</span>
@@ -308,21 +255,10 @@ export default function DeveloperDashboard() {
                         </p>
 
                         <button
-                            onClick={() => setActiveSection("API Explorer")}
+                            onClick={() => navigateToSection("API Explorer")}
                         >
                             Explore APIs <ArrowUpRight size={14} />
                         </button>
-                    </div>
-
-                    <div className="dev-user-profile">
-                        <span className="dev-avatar">D</span>
-
-                        <span className="dev-user-copy">
-                            <strong>{sessionStorage.getItem("portalName") || sessionStorage.getItem("portalEmail") || "Developer"}</strong>
-                            <small>{sessionStorage.getItem("portalRole") || "Developer"} workspace</small>
-                        </span>
-
-                        <ChevronDown size={16} />
                     </div>
                 </div>
             </aside>
@@ -336,17 +272,21 @@ export default function DeveloperDashboard() {
                     </div>
 
                     <div className="dev-topbar-actions">
-                        <span className="dev-preview-pill">
-                            <span />
-                            Preview data
-                        </span>
-
                         <button
                             className="dev-icon-button"
                             aria-label="Search"
-                            onClick={() => setActiveSection("API Explorer")}
+                            onClick={() => navigateToSection("API Explorer")}
                         >
                             <Search size={18} />
+                        </button>
+
+                        <button
+                            className="dev-icon-button"
+                            aria-label="Developer settings"
+                            title="Developer settings"
+                            onClick={() => navigateToSection("Settings")}
+                        >
+                            <Settings size={18} />
                         </button>
 
                         <button
@@ -360,6 +300,11 @@ export default function DeveloperDashboard() {
                         <span className="dev-topbar-avatar">
                             {(sessionStorage.getItem("portalName")?.trim().charAt(0) || "D").toUpperCase()}
                         </span>
+                        
+                        <span className="dev-user-copy">
+                            <strong>{sessionStorage.getItem("portalName") || sessionStorage.getItem("portalEmail") || "Developer"}</strong>
+                        </span>
+                    
                         <button
                             className="portal-dev-logout"
                             onClick={() => {
@@ -374,352 +319,7 @@ export default function DeveloperDashboard() {
                 </header>
 
                 {/* OVERVIEW */}
-                {activeSection === "Overview" && (
-                    <div className="dev-content">
-                        <div className="dev-page-heading">
-                            <div>
-                                <div className="dev-overline">
-                                    DEVELOPER WORKSPACE
-                                </div>
-
-                                <h1>Engineering overview</h1>
-
-                                <p>
-                                    Monitor your backend services and explore your API
-                                    infrastructure.
-                                </p>
-                            </div>
-
-                            <button
-                                className="dev-secondary-button"
-                                onClick={() => setActiveSection("API Explorer")}
-                            >
-                                <Code2 size={16} />
-                                Explore APIs
-                            </button>
-                        </div>
-
-                        <div className="dev-notice">
-                            <Activity size={18} />
-
-                            <div>
-                                <strong>Live backend health check</strong>
-
-                                <p>
-                                    Spring Boot is checked through the /api/health
-                                    endpoint every 2 Minutes. Other metrics are still
-                                    demonstration data.
-                                </p>
-                            </div>
-                        </div>
-
-                        <section className="dev-metric-grid">
-                            <article className="dev-metric-card">
-                                <div className="dev-metric-top">
-                                    <span>Backend status</span>
-
-                                    <span className="dev-metric-icon green">
-                                        <Server size={18} />
-                                    </span>
-                                </div>
-
-                                <strong>
-                                    {healthStatus === "up"
-                                        ? "Online"
-                                        : healthStatus === "down"
-                                            ? "Offline"
-                                            : "Checking"}
-                                </strong>
-
-                                <div className="dev-metric-foot neutral">
-                                    <Activity size={14} />
-                                    <span>Live health endpoint</span>
-                                </div>
-                            </article>
-
-                            <article className="dev-metric-card">
-                                <div className="dev-metric-top">
-                                    <span>API endpoints</span>
-
-                                    <span className="dev-metric-icon blue">
-                                        <Code2 size={18} />
-                                    </span>
-                                </div>
-
-                                <strong>3</strong>
-
-                                <div className="dev-metric-foot neutral">
-                                    <GitBranch size={14} />
-                                    <span>Sample endpoint inventory</span>
-                                </div>
-                            </article>
-
-                            <article className="dev-metric-card">
-                                <div className="dev-metric-top">
-                                    <span>Database</span>
-
-                                    <span className="dev-metric-icon purple">
-                                        <Database size={18} />
-                                    </span>
-                                </div>
-
-                                <strong>PostgreSQL</strong>
-
-                                <div className="dev-metric-foot neutral">
-                                    <Activity size={14} />
-                                    <span>Connectivity not checked</span>
-                                </div>
-                            </article>
-
-                            <article className="dev-metric-card">
-                                <div className="dev-metric-top">
-                                    <span>API latency</span>
-
-                                    <span className="dev-metric-icon orange">
-                                        <Gauge size={18} />
-                                    </span>
-                                </div>
-
-                                <strong>--</strong>
-
-                                <div className="dev-metric-foot neutral">
-                                    <Wifi size={14} />
-                                    <span>Telemetry not connected</span>
-                                </div>
-                            </article>
-                        </section>
-
-                        <section className="dev-panel-grid">
-                            <article className="dev-panel dev-services-panel">
-                                <div className="dev-panel-heading">
-                                    <div>
-                                        <h2>Service inventory</h2>
-                                        <p>Core platform components</p>
-                                    </div>
-
-                                    <button
-                                        className="dev-text-button"
-                                        onClick={() => setActiveSection("Services")}
-                                    >
-                                        View services <ArrowUpRight size={14} />
-                                    </button>
-                                </div>
-
-                                <div className="dev-service-row">
-                                    <span className="dev-service-icon">
-                                        <Server size={18} />
-                                    </span>
-
-                                    <div className="dev-service-copy">
-                                        <strong>Spring Boot API</strong>
-                                        <small>Health endpoint · Port 8080</small>
-                                    </div>
-
-                                    {renderHealthBadge()}
-                                </div>
-
-                                <div className="dev-service-row">
-                                    <span className="dev-service-icon">
-                                        <Database size={18} />
-                                    </span>
-
-                                    <div className="dev-service-copy">
-                                        <strong>PostgreSQL</strong>
-                                        <small>Application database</small>
-                                    </div>
-
-                                    <span className="dev-status-badge unknown">
-                                        <span />
-                                        Not checked
-                                    </span>
-                                </div>
-
-                                <div className="dev-service-row">
-                                    <span className="dev-service-icon">
-                                        <ShieldCheck size={18} />
-                                    </span>
-
-                                    <div className="dev-service-copy">
-                                        <strong>Authentication</strong>
-                                        <small>Firebase and JWT integration</small>
-                                    </div>
-
-                                    <span className="dev-status-badge review">
-                                        <span />
-                                        Review
-                                    </span>
-                                </div>
-                            </article>
-
-                            <article className="dev-panel dev-quick-panel">
-                                <div className="dev-panel-heading">
-                                    <div>
-                                        <h2>Developer tools</h2>
-                                        <p>Quick access to common tasks</p>
-                                    </div>
-                                </div>
-
-                                <button
-                                    className="dev-tool-link"
-                                    onClick={() => setActiveSection("API Explorer")}
-                                >
-                                    <span className="dev-tool-icon blue">
-                                        <Code2 size={18} />
-                                    </span>
-
-                                    <span>
-                                        <strong>API Explorer</strong>
-                                        <small>Browse endpoint references</small>
-                                    </span>
-
-                                    <ArrowUpRight size={16} />
-                                </button>
-
-                                <button
-                                    className="dev-tool-link"
-                                    onClick={() => setActiveSection("Logs")}
-                                >
-                                    <span className="dev-tool-icon purple">
-                                        <Terminal size={18} />
-                                    </span>
-
-                                    <span>
-                                        <strong>Application logs</strong>
-                                        <small>Prepare log monitoring</small>
-                                    </span>
-
-                                    <ArrowUpRight size={16} />
-                                </button>
-
-                                <button
-                                    className="dev-tool-link"
-                                    onClick={() => setActiveSection("Services")}
-                                >
-                                    <span className="dev-tool-icon green">
-                                        <Activity size={18} />
-                                    </span>
-
-                                    <span>
-                                        <strong>Service health</strong>
-                                        <small>View live backend status</small>
-                                    </span>
-
-                                    <ArrowUpRight size={16} />
-                                </button>
-                            </article>
-                        </section>
-
-                        <div className="dev-footer">
-                            <span>MusclePlay Developer Portal</span>
-                            <span>
-                                {lastHealthCheck
-                                    ? `Last health check: ${lastHealthCheck.toLocaleTimeString()}`
-                                    : "Waiting for health check"}
-                            </span>
-                        </div>
-                    </div>
-                )}
-
-                {/* SERVICES */}
-                {activeSection === "Services" && (
-                    <div className="dev-content">
-                        <div className="dev-page-heading">
-                            <div>
-                                <div className="dev-overline">
-                                    INFRASTRUCTURE
-                                </div>
-
-                                <h1>Services</h1>
-
-                                <p>
-                                    Review your backend components and their connection
-                                    status.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="dev-notice">
-                            <Activity size={18} />
-
-                            <div>
-                                <strong>
-                                    {healthStatus === "up"
-                                        ? "Spring Boot health endpoint is responding"
-                                        : healthStatus === "down"
-                                            ? "Spring Boot health check failed"
-                                            : "Checking Spring Boot health"}
-                                </strong>
-
-                                <p>
-                                    {healthMessage ||
-                                        (lastHealthCheck
-                                            ? `Last checked at ${lastHealthCheck.toLocaleTimeString()}.`
-                                            : "Waiting for the first health check.")}
-
-                                    {" "}PostgreSQL and Firebase are not independently
-                                    monitored yet.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="dev-panel dev-full-panel">
-                            {services.map(({ name, description, detail }) => {
-                                const isBackend = name === "Spring Boot API";
-
-                                const badgeClass = !isBackend
-                                    ? "unknown"
-                                    : healthStatus === "up"
-                                        ? "online"
-                                        : healthStatus === "down"
-                                            ? "offline"
-                                            : "checking";
-
-                                const badgeText = !isBackend
-                                    ? "Not checked"
-                                    : healthStatus === "up"
-                                        ? "Online"
-                                        : healthStatus === "down"
-                                            ? "Unavailable"
-                                            : "Checking";
-
-                                return (
-                                    <div className="dev-service-row" key={name}>
-                                        <span className="dev-service-icon">
-                                            {name === "PostgreSQL" ? (
-                                                <Database size={18} />
-                                            ) : name === "Firebase" ? (
-                                                <ShieldCheck size={18} />
-                                            ) : (
-                                                <Server size={18} />
-                                            )}
-                                        </span>
-
-                                        <div className="dev-service-copy">
-                                            <strong>{name}</strong>
-                                            <small>{description}</small>
-                                        </div>
-
-                                        <span className="dev-service-detail">
-                                            {detail}
-                                        </span>
-
-                                        <span
-                                            className={`dev-status-badge ${badgeClass}`}
-                                            title={
-                                                isBackend && lastHealthCheck
-                                                    ? `Last checked at ${lastHealthCheck.toLocaleTimeString()}`
-                                                    : undefined
-                                            }
-                                        >
-                                            <span />
-                                            {badgeText}
-                                        </span>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                )}
+                {activeSection === "Overview" && <PlatformOverview/>}
 
                 {/* API EXPLORER */}
                 {activeSection === "API Explorer" && (
@@ -743,7 +343,7 @@ export default function DeveloperDashboard() {
                             <ShieldCheck size={18} />
 
                             <div>
-                                <strong>Endpoint reference only</strong>
+                                <strong>Integrated API reference</strong>
 
                                 <p>
                                     This is a sample inventory, not a live API catalogue.
@@ -784,15 +384,27 @@ export default function DeveloperDashboard() {
                                     )}
                                 </div>
                             </div>
+                            <div className="dev-api-filters">
+                                <select aria-label="Filter API module" value={apiModuleFilter} onChange={(event) => setApiModuleFilter(event.target.value)}>
+                                    <option>All modules</option>
+                                    {[...new Set(endpoints.map((endpoint) => endpoint.module))].sort().map((module) => <option key={module}>{module}</option>)}
+                                </select>
+                                <select aria-label="Filter HTTP method" value={apiMethodFilter} onChange={(event) => setApiMethodFilter(event.target.value)}>
+                                    <option>All methods</option>
+                                    {["GET", "POST", "PUT", "PATCH", "DELETE"].map((method) => <option key={method}>{method}</option>)}
+                                </select>
+                            </div>
 
                             <div className="dev-table-wrap">
                                 <table className="dev-api-table">
                                     <thead>
                                         <tr>
                                             <th>Method</th>
+                                            <th>Module</th>
                                             <th>Endpoint</th>
                                             <th>Description</th>
-                                            <th>Notes</th>
+                                            <th>HTTP status</th>
+                                            <th>Expected response</th>
                                         </tr>
                                     </thead>
 
@@ -810,6 +422,7 @@ export default function DeveloperDashboard() {
                                                     </span>
                                                 </td>
 
+                                                <td>{endpoint.module}</td>
                                                 <td>
                                                     <code>{endpoint.path}</code>
                                                 </td>
@@ -821,12 +434,13 @@ export default function DeveloperDashboard() {
                                                         {endpoint.status}
                                                     </span>
                                                 </td>
+                                                <td>{endpoint.expectedResponse ? <code>{endpoint.expectedResponse}</code> : "—"}</td>
                                             </tr>
                                         ))}
 
                                         {filteredEndpoints.length === 0 && (
                                             <tr>
-                                                <td colSpan={4} className="dev-empty-row">
+                                                <td colSpan={6} className="dev-empty-row">
                                                     No endpoints match your search.
                                                 </td>
                                             </tr>
@@ -839,45 +453,7 @@ export default function DeveloperDashboard() {
                 )}
 
                 {/* LOGS */}
-                {activeSection === "Logs" && (
-                    <div className="dev-content">
-                        <div className="dev-page-heading">
-                            <div>
-                                <div className="dev-overline">
-                                    OBSERVABILITY
-                                </div>
-
-                                <h1>Application logs</h1>
-
-                                <p>
-                                    Prepare a central view for backend events and errors.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="dev-empty-state">
-                            <span className="dev-empty-icon">
-                                <Terminal size={26} />
-                            </span>
-
-                            <h2>Log streaming isn't connected yet</h2>
-
-                            <p>
-                                This page will display real application logs after we
-                                configure a secure log retrieval approach. No sample
-                                entries are presented as real events.
-                            </p>
-
-                            <button
-                                className="dev-secondary-button"
-                                onClick={() => setActiveSection("Services")}
-                            >
-                                <Server size={16} />
-                                Review services
-                            </button>
-                        </div>
-                    </div>
-                )}
+                {activeSection === "Logs" && <DeveloperLogsPage />}
 
                 {/* SETTINGS */}
                 {activeSection === "Settings" && (
@@ -932,12 +508,11 @@ export default function DeveloperDashboard() {
                     </div>
                 )}
 
-                {/* FITNESS BACKEND TOOLS */}
-                {activeSection === "Fitness Tools" && <DeveloperFeatureConsole />}
                 {activeSection === "Support Center" && <DeveloperSupportWorkspace />}
                 {activeSection === "Feedback Management" && <DeveloperFeedbackManagement />}
                 {activeSection === "App Follow Us" && <DeveloperFollowUsManagement />}
                 {activeSection === "Email Management" && <DeveloperEmailManagement />}
+                {activeSection === "Notification Management" && <DeveloperNotificationManagement />}
                 {activeSection === "Assets Management" && <DeveloperAssetsManagement />}
                 {activeSection === "Badge Management" && <DeveloperBadgeManagement />}
                 {activeSection === "Exercise Management" && <DeveloperExerciseManagement />}
@@ -946,15 +521,14 @@ export default function DeveloperDashboard() {
 
                 {![
                     "Overview",
-                    "Services",
                     "API Explorer",
                     "Logs",
                     "Settings",
-                    "Fitness Tools",
                     "Support Center",
                     "Feedback Management",
                     "App Follow Us",
                     "Email Management",
+                    "Notification Management",
                     "Assets Management",
                     "Badge Management",
                     "Exercise Management",
@@ -982,10 +556,7 @@ export default function DeveloperDashboard() {
                         <div className="dev-empty-state">
                             <span className="dev-empty-icon"><Code2 size={26} /></span>
                             <h2>No verified data source</h2>
-                            <p>Existing developer API operations are available in the fitness tools console. That console sends requests to the configured API and should only be used against an approved test environment.</p>
-                            <button className="dev-secondary-button" onClick={() => setActiveSection("Fitness Tools")}>
-                                <Terminal size={16} /> Open fitness tools console
-                            </button>
+                            <p>Explore the API Explorer for endpoint references and integration documentation.</p>
                         </div>
                     </div>
                 )}

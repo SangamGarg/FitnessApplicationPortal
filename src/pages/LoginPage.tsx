@@ -83,7 +83,7 @@ export default function LoginPage({ onContinue }: LoginPageProps) {
 
         <div className="visual-footer">
           <span>FITNESSOS PORTAL</span>
-          <span>Admin &amp; Developer Workspace</span>
+          <span>Admin &amp; Developer Portal</span>
         </div>
       </section>
 
@@ -97,9 +97,9 @@ export default function LoginPage({ onContinue }: LoginPageProps) {
           </div>
 
           <div className="form-heading">
-            <span className="form-kicker">WELCOME BACK</span>
-            <h2>Sign in to your portal</h2>
-            <p>Choose your workspace and enter your credentials.</p>
+            <span className="form-kicker">WELCOME</span>
+            <h2>Sign In</h2>
+            <p>Choose your portal and enter your credentials.</p>
           </div>
 
           <form onSubmit={handleSubmit}>

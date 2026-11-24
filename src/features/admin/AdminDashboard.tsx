@@ -5,45 +5,36 @@ import {
   ArrowDownUp,
   BadgeDollarSign,
   Bell,
-  BookOpen,
   ChevronRight,
-  CircleHelp,
   Coins,
-  Dumbbell,
-  FileClock,
+  History,
   LayoutDashboard,
   LogOut,
   Menu,
   Search,
   Settings,
   ShieldCheck,
-  TicketCheck,
+  Smartphone,
   Users,
   X,
-  Zap,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { portalLogout } from "../../lib/portalApi";
+import PlatformOverview from "../../pages/PlatformOverview";
 import DeveloperManagement from "../../pages/DeveloperManagement";
+import AdminMobileUsers from "./AdminMobileUsers";
+import AdminAuditLogs from "./AdminAuditLogs";
 import "./AdminDashboard.css";
 
 type AdminSection =
-  | "Overview"
-  | "User Management"
-  | "Workout and Activity Analytics"
+  | "Platform Overview"
+  | "Mobile Users"
   | "MP Coins Economy"
   | "Cashout and Payout Operations"
   | "Coin Store Packs"
-  | "Referrals and Rewards"
-  | "Challenges and Events"
-  | "Anti-Cheat and Fraud Review"
-  | "Policy and Help Center"
-  | "Notifications"
-  | "Audit Logs"
   | "Developers"
-  | "Staff and Access Management"
+  | "Audit Logs"
   | "Platform Settings"
-  | "Support Tickets";
 
 type PreviewData = {
   description: string;
@@ -51,40 +42,22 @@ type PreviewData = {
   rows: string[][];
 };
 
-const navigation: { label: AdminSection; group: string; icon: LucideIcon }[] = [
-  { label: "Overview", group: "OPERATIONS", icon: LayoutDashboard },
-  { label: "User Management", group: "OPERATIONS", icon: Users },
-  { label: "Workout and Activity Analytics", group: "OPERATIONS", icon: Activity },
-  { label: "Support Tickets", group: "OPERATIONS", icon: TicketCheck },
-  { label: "MP Coins Economy", group: "FINANCE", icon: Coins },
-  { label: "Cashout and Payout Operations", group: "FINANCE", icon: BadgeDollarSign },
-  { label: "Coin Store Packs", group: "FINANCE", icon: ArrowDownUp },
-  { label: "Referrals and Rewards", group: "GROWTH", icon: Zap },
-  { label: "Challenges and Events", group: "GROWTH", icon: Dumbbell },
-  { label: "Anti-Cheat and Fraud Review", group: "TRUST & SAFETY", icon: AlertTriangle },
-  { label: "Policy and Help Center", group: "TRUST & SAFETY", icon: BookOpen },
-  { label: "Notifications", group: "TRUST & SAFETY", icon: Bell },
-  { label: "Audit Logs", group: "GOVERNANCE", icon: FileClock },
-  { label: "Developers", group: "GOVERNANCE", icon: Users },
-  { label: "Staff and Access Management", group: "GOVERNANCE", icon: ShieldCheck },
-  { label: "Platform Settings", group: "GOVERNANCE", icon: Settings },
+const navigation: { label: AdminSection; icon: LucideIcon }[] = [
+  { label: "Platform Overview", icon: LayoutDashboard },
+  { label: "Audit Logs", icon: History },
+  { label: "Mobile Users", icon: Smartphone },
+  { label: "Developers", icon: Users },
+  { label: "MP Coins Economy", icon: Coins },
+  { label: "Cashout and Payout Operations", icon: BadgeDollarSign },
+  { label: "Coin Store Packs", icon: ArrowDownUp },
 ];
 
 const previewData: Partial<Record<AdminSection, PreviewData>> = {
-  "User Management": {
-    description: "Sample records for layout review only. User data is not connected.",
-    columns: ["User", "Account status", "MP Coins", "Last active"],
-    rows: [
-      ["MP-DEMO-1042 · Alex Morgan", "Active", "Not available", "Not connected"],
-      ["MP-DEMO-1088 · Jordan Lee", "Under review", "Not available", "Not connected"],
-      ["MP-DEMO-1120 · Sam Taylor", "Restricted", "Not available", "Not connected"],
-    ],
-  },
   "MP Coins Economy": {
     description: "Example ledger rows only. No balances are calculated or changed here.",
     columns: ["Transaction", "Type", "Direction", "Amount", "Status"],
     rows: [
-      ["DEMO-TXN-2001", "Challenge reward", "Credit", "120 MP", "Example"],
+      ["DEMO-TXN-2001", "Activity reward", "Credit", "120 MP", "Example"],
       ["DEMO-TXN-2002", "Cashout reservation", "Reserve", "500 MP", "Example"],
       ["DEMO-TXN-2003", "Admin adjustment", "Debit", "Not available", "Not supported"],
     ],
@@ -105,59 +78,6 @@ const previewData: Partial<Record<AdminSection, PreviewData>> = {
       ["demo_boost_pack", "1,500 + bonus not set", "Not configured", "Not connected", "Draft"],
     ],
   },
-  "Referrals and Rewards": {
-    description: "Sample records only. No referral attribution or rewards are connected.",
-    columns: ["Referral", "Inviter", "Invitee", "Reward status", "Conversion"],
-    rows: [
-      ["DEMO-REF-001", "MP-DEMO-1042", "Not connected", "Unverified", "Unavailable"],
-      ["DEMO-REF-002", "MP-DEMO-1088", "Not connected", "Unverified", "Unavailable"],
-    ],
-  },
-  "Challenges and Events": {
-    description: "Preview entries only. Challenge participation and results are not connected.",
-    columns: ["Challenge", "State", "Participants", "Completion", "Schedule"],
-    rows: [
-      ["7-day movement streak", "Draft", "Unavailable", "Unavailable", "Not configured"],
-      ["Boss Battle weekend", "Draft", "Unavailable", "Unavailable", "Not configured"],
-    ],
-  },
-  "Anti-Cheat and Fraud Review": {
-    description: "Illustrative review queue. Signals are not connected and never trigger automatic bans.",
-    columns: ["Case", "User", "Signal", "Confidence", "Decision"],
-    rows: [
-      ["DEMO-RISK-001", "MP-DEMO-1088", "Emulator signal", "Low", "Human review required"],
-      ["DEMO-RISK-002", "MP-DEMO-1120", "Repetition anomaly", "Unverified", "Human review required"],
-    ],
-  },
-  "Policy and Help Center": {
-    description: "Sample policy entries. Published policies and version history are not connected.",
-    columns: ["Article", "Version", "Status", "Updated", "Owner"],
-    rows: [
-      ["Cashout policy", "Not available", "Draft", "Not connected", "Unassigned"],
-      ["Community guidelines", "Not available", "Draft", "Not connected", "Unassigned"],
-    ],
-  },
-  Notifications: {
-    description: "Preview drafts only. Sending is disabled until a verified notification service is connected.",
-    columns: ["Notification", "Audience", "Status", "Scheduled", "Delivery"],
-    rows: [
-      ["Workout reminder", "Not configured", "Draft", "Not scheduled", "Not connected"],
-      ["Challenge announcement", "Not configured", "Draft", "Not scheduled", "Not connected"],
-    ],
-  },
-  "Audit Logs": {
-    description: "Audit events are unavailable until the backend audit log is integrated.",
-    columns: ["Event", "Actor", "Action", "Reason", "Timestamp"],
-    rows: [],
-  },
-  "Staff and Access Management": {
-    description: "Example roles only. Changes to staff access are not available in this portal preview.",
-    columns: ["Staff member", "Role", "Workspace", "Status", "Last active"],
-    rows: [
-      ["Portal Admin", "ADMIN", "Admin", "Preview only", "Not connected"],
-      ["Portal Developer", "DEVELOPER", "Developer", "Preview only", "Not connected"],
-    ],
-  },
   "Platform Settings": {
     description: "Configuration values are not loaded from a backend and cannot be saved.",
     columns: ["Setting", "Current value", "Source", "Status"],
@@ -167,33 +87,10 @@ const previewData: Partial<Record<AdminSection, PreviewData>> = {
       ["Coin expiry policy", "Unavailable", "Backend required", "Not configured"],
     ],
   },
-  "Workout and Activity Analytics": {
-    description: "No production analytics are available. This page intentionally does not invent metrics.",
-    columns: ["Metric", "Value", "Source", "Availability"],
-    rows: [
-      ["Daily active users", "Unavailable", "Backend analytics required", "Not connected"],
-      ["Workout completion rate", "Unavailable", "Backend analytics required", "Not connected"],
-      ["Game participation", "Unavailable", "Backend analytics required", "Not connected"],
-    ],
-  },
-  "Support Tickets": {
-    description: "Ticket records and replies require a connected support service.",
-    columns: ["Ticket", "Requester", "Topic", "Priority", "Status"],
-    rows: [],
-  },
 };
 
-const unavailableMetrics = [
-  { label: "Registered users", icon: Users },
-  { label: "Workouts today", icon: Dumbbell },
-  { label: "Pending cashouts", icon: BadgeDollarSign },
-  { label: "MP Coins outstanding", icon: Coins },
-  { label: "Open support tickets", icon: CircleHelp },
-  { label: "Active challenges", icon: Zap },
-];
-
 export default function AdminDashboard() {
-  const [activeSection, setActiveSection] = useState<AdminSection>("Overview");
+  const [activeSection, setActiveSection] = useState<AdminSection>("Platform Overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
@@ -236,11 +133,8 @@ export default function AdminDashboard() {
   }
 
   const sensitive = [
-    "User Management",
     "MP Coins Economy",
     "Cashout and Payout Operations",
-    "Anti-Cheat and Fraud Review",
-    "Staff and Access Management",
   ].includes(activeSection);
 
   return (
@@ -251,25 +145,20 @@ export default function AdminDashboard() {
       <aside className={`admin-sidebar ${sidebarOpen ? "is-open" : ""}`}>
         <div className="admin-brand">
           <span className="admin-brand-mark"><Activity size={21} /></span>
-          <span><strong>MusclePlay</strong><small>MANAGEMENT PORTAL</small></span>
+          <span><strong>MusclePlay</strong><small>Admin Portal</small></span>
           <button className="admin-close-nav" onClick={() => setSidebarOpen(false)} aria-label="Close navigation"><X size={19} /></button>
         </div>
-        <div className="admin-workspace"><span className="admin-workspace-avatar">M</span><span><strong>MusclePlay</strong><small>Admin workspace</small></span><ShieldCheck size={16} /></div>
+        {/* <div className="admin-workspace"><span><small>Admin Options</small></span></div> */}
         <nav className="admin-nav" aria-label="Admin workspace navigation">
-          {Array.from(new Set(navigation.map((item) => item.group))).map((group) => (
-            <div className="admin-nav-group" key={group}>
-              <div className="admin-nav-heading">{group}</div>
-              {navigation.filter((item) => item.group === group).map(({ label, icon: Icon }) => (
-                <button key={label} className={`admin-nav-item ${activeSection === label ? "active" : ""}`} onClick={() => chooseSection(label)}>
-                  <Icon size={17} /><span>{label}</span>{activeSection === label && <ChevronRight size={15} />}
-                </button>
-              ))}
-            </div>
+          {navigation.map(({ label, icon: Icon }) => (
+            <button key={label} className={`admin-nav-item ${activeSection === label ? "active" : ""}`} onClick={() => chooseSection(label)}>
+              <Icon size={17} /><span>{label}</span>{activeSection === label && <ChevronRight size={15} />}
+            </button>
           ))}
         </nav>
         <div className="admin-sidebar-bottom">
-          <div className="admin-security-note"><ShieldCheck size={17} /><span><strong>Protected workspace</strong><small>Server-side permissions are required for every privileged action.</small></span></div>
-          <div className="admin-profile"><span className="admin-profile-avatar">{(sessionStorage.getItem("portalName") || "A").slice(0, 1).toUpperCase()}</span><span><strong>{sessionStorage.getItem("portalName") || "Portal user"}</strong><small>{sessionStorage.getItem("portalRole") || "Portal"}</small></span></div>
+          {/* <div className="admin-security-note"><ShieldCheck size={17} /><span><strong>Protected workspace</strong><small>Server-side permissions are required for every privileged action.</small></span></div> */}
+          {/* <div className="admin-profile"><span className="admin-profile-avatar">{(sessionStorage.getItem("portalName") || "A").slice(0, 1).toUpperCase()}</span><span><strong>{sessionStorage.getItem("portalName") || "Portal user"}</strong><small>{sessionStorage.getItem("portalRole") || "Portal"}</small></span></div> */}
         </div>
       </aside>
 
@@ -278,44 +167,27 @@ export default function AdminDashboard() {
           <button className="admin-menu-button" onClick={() => setSidebarOpen(true)} aria-label="Open navigation"><Menu size={19} /></button>
           <div className="admin-breadcrumb"><span>MusclePlay</span><span>/</span><strong>{activeSection}</strong></div>
           <div className="admin-top-actions">
-            <label className="admin-global-search"><Search size={16} /><input placeholder="Search this page" value={search} onChange={(event) => setSearch(event.target.value)} aria-label="Search this page" /></label>
+            {activeSection !== "Mobile Users" && activeSection !== "Audit Logs" && <label className="admin-global-search"><Search size={16} /><input placeholder="Search this page" value={search} onChange={(event) => setSearch(event.target.value)} aria-label="Search this page" /></label>}
             <button className="admin-icon-button" aria-label="Notifications" title="Notifications are not connected"><Bell size={18} /></button>
-            <button className="admin-icon-button" aria-label="Sign out" title="Sign out" onClick={() => { void portalLogout().finally(() => { window.location.href = "/"; }); }}><LogOut size={17} /></button>
+            <button className={`admin-icon-button ${activeSection === "Platform Settings" ? "is-active" : ""}`} aria-label="Platform Settings" title="Platform Settings" aria-current={activeSection === "Platform Settings" ? "page" : undefined} onClick={() => chooseSection("Platform Settings")}><Settings size={18} /></button>
+            <span className="admin-profile-avatar">{(sessionStorage.getItem("portalName")?.trim().charAt(0) || "A").toUpperCase()}</span>
+            <span className="admin-user-copy"><strong>{sessionStorage.getItem("portalName") || sessionStorage.getItem("portalEmail") || "Portal user"}</strong></span>
+            <button className="portal-dev-logout" onClick={() => { void portalLogout().finally(() => { window.location.href = "/"; }); }}>
+              <LogOut size={15} /> Sign out
+            </button>
           </div>
         </header>
 
         <div className="admin-content">
-          <div className="admin-demo-banner"><span className="admin-demo-dot" /><strong>{activeSection === "Developers" ? "Connected module" : "Portal preview"}</strong><span>{activeSection === "Developers" ? "Developer account management uses the configured portal API" : "Demo fixtures only · Admin data and operational actions are not connected"}</span></div>
 
-          {activeSection === "Overview" ? (
-            <>
-              <div className="admin-page-heading">
-                <div><div className="admin-eyebrow">ADMIN WORKSPACE</div><h1>Platform overview</h1><p>Operational metrics appear here when a trusted backend data source is connected.</p></div>
-                <span className="admin-environment-pill"><span /> Demo environment</span>
-              </div>
-              <section className="admin-metric-grid" aria-label="Platform metrics">
-                {unavailableMetrics.map(({ label, icon: Icon }) => (
-                  <article className="admin-metric-card" key={label}><span className="admin-metric-icon"><Icon size={18} /></span><span className="admin-metric-label">{label}</span><strong>Unavailable</strong><small>Waiting for verified backend data</small></article>
-                ))}
-              </section>
-              <div className="admin-overview-grid">
-                <section className="admin-panel admin-analytics-panel"><div className="admin-section-title"><div><h2>Business analytics</h2><p>Activity, retention, game, coin and referral trends</p></div><span className="admin-status-tag">Not connected</span></div><div className="admin-empty-chart"><Activity size={23} /><strong>No analytics data available</strong><span>Charts will appear when real event and ledger data is integrated.</span></div></section>
-                <section className="admin-panel admin-quick-panel"><div className="admin-section-title"><div><h2>Quick actions</h2><p>Jump to an operations workspace</p></div></div><div className="admin-quick-actions">
-                  {[
-                    ["Review support tickets", "Support Tickets", TicketCheck],
-                    ["Review cashout requests", "Cashout and Payout Operations", BadgeDollarSign],
-                    ["Investigate flagged users", "Anti-Cheat and Fraud Review", AlertTriangle],
-                    ["Manage challenges", "Challenges and Events", Dumbbell],
-                  ].map(([label, section, Icon]) => {
-                    const ActionIcon = Icon as LucideIcon;
-                    return <button key={label as string} onClick={() => chooseSection(section as AdminSection)}><ActionIcon size={17} /><span>{label as string}</span><ChevronRight size={15} /></button>;
-                  })}
-                </div></section>
-              </div>
-              <section className="admin-panel admin-integrity-note"><ShieldCheck size={19} /><div><strong>Financial and safety actions are not enabled</strong><p>This portal preview does not modify user accounts, coin balances, payment requests, or risk decisions. Sensitive changes require backend authorization, a reason, and an auditable server-side record.</p></div></section>
-            </>
+          {activeSection === "Platform Overview" ? (
+            <PlatformOverview />
           ) : activeSection === "Developers" ? (
             <DeveloperManagement />
+          ) : activeSection === "Mobile Users" ? (
+            <AdminMobileUsers />
+          ) : activeSection === "Audit Logs" ? (
+            <AdminAuditLogs />
           ) : (
             <>
               <div className="admin-page-heading">
@@ -336,7 +208,7 @@ export default function AdminDashboard() {
               {selectedRow && <aside className="admin-detail-card"><div className="admin-detail-heading"><div><span className="admin-eyebrow">RECORD PREVIEW</span><h2>{selectedRow[0]}</h2></div><button className="admin-icon-button" aria-label="Close details" onClick={() => setSelectedRow(null)}><X size={17} /></button></div><dl>{(data?.columns ?? []).map((column, index) => <div key={column}><dt>{column}</dt><dd>{selectedRow[index] || "Unavailable"}</dd></div>)}</dl><div className="admin-detail-warning"><AlertTriangle size={16} /><span>This is a fixture for UI review, not a real user or request.</span></div>{sensitive && <button className="admin-reason-button" onClick={previewSensitiveAction}>Preview protected action</button>}</aside>}
             </>
           )}
-          <footer className="admin-footer"><span>MusclePlay Management Portal</span><span>Frontend preview · Backend integration pending</span></footer>
+          <footer className="admin-footer"><span>MusclePlay Management Portal</span><span>{activeSection === "Mobile Users" ? "Mobile account data provided by the admin API" : "Frontend preview · Backend integration pending"}</span></footer>
         </div>
       </main>
 

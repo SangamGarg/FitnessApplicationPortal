@@ -1,4 +1,3 @@
-
 .dev-portal {
   min-height: 100vh;
   display: flex;
@@ -68,6 +67,7 @@
   flex: 1;
   gap: 5px;
   margin-top: 14px;
+  margin-bottom: 14px;
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
@@ -252,27 +252,6 @@
   align-items: center;
   gap: 10px;
 }
-
-.dev-preview-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 7px 10px;
-  border: 1px solid #e9e2c9;
-  border-radius: 20px;
-  background: #fffdf4;
-  color: #8b6b1d;
-  font-size: 10px;
-  font-weight: 650;
-}
-
-.dev-preview-pill > span {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #d6a536;
-}
-
 .dev-icon-button {
   display: grid;
   width: 32px;
@@ -903,12 +882,7 @@
   .dev-topbar-actions {
     gap: 7px;
   }
-
-  .dev-preview-pill {
-    font-size: 9px;
-  }
-
-  .dev-service-row {
+.dev-service-row {
     flex-wrap: wrap;
   }
 
@@ -944,7 +918,6 @@
     gap: 4px;
   }
 
-  .dev-preview-pill,
   .dev-topbar-avatar {
     display: none;
   }
@@ -952,12 +925,7 @@
   .dev-topbar-actions .dev-icon-button:first-of-type {
     display: none;
   }
-
-  .dev-preview-pill {
-    padding: 6px 7px;
-  }
-
-  .dev-content {
+.dev-content {
     padding: 22px 12px;
   }
 
@@ -1097,18 +1065,6 @@
 .dev-breadcrumb strong {
   color: #e8eef7;
 }
-
-.dev-preview-pill {
-  border: 1px solid rgba(255, 173, 77, 0.24);
-  color: #f3cb86;
-  background: rgba(130, 77, 22, 0.15);
-}
-
-.dev-preview-pill > span {
-  background: #ffb84d;
-  box-shadow: 0 0 11px rgba(255, 184, 77, 0.65);
-}
-
 .dev-icon-button {
   border-color: rgba(148, 163, 184, 0.17);
   color: #aeb9ca;
@@ -1409,5 +1365,59 @@
 
   .dev-footer {
     flex-direction: column;
+  }
+}
+.dev-api-filters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 14px 0;
+}
+
+.dev-api-filters select {
+  appearance: none;
+  -webkit-appearance: none;
+  min-width: 190px;
+  height: 42px;
+  padding: 0 40px 0 14px;
+  border: 1px solid #dfe5ec;
+  border-radius: 10px;
+  border-color: rgba(148, 163, 184, 0.21);
+  background: rgba(255, 255, 255, 0.045);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  color: #f0f5fb;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 550;
+  line-height: 1.4;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, .04);
+  transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+}
+
+/* .dev-api-filters select:hover {
+  border-color: rgba(148, 163, 184, 0.21);
+  color: #f0f5fb;
+  background: rgba(255, 255, 255, 0.045);
+} */
+
+.dev-api-filters select:focus-visible {
+  outline: none;
+  border-color: #11996d;
+  box-shadow: 0 0 0 3px rgba(17, 153, 109, .14);
+}
+
+.dev-api-filters select option {
+  color: #edf3fa;
+  background: #101827;
+}
+
+@media (max-width: 640px) {
+  .dev-api-filters select {
+    width: 100%;
+    min-width: 0;
   }
 }

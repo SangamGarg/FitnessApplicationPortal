@@ -125,36 +125,30 @@
 }
 
 .admin-nav {
+  display: grid;
+  align-content: start;
   min-height: 0;
-  overflow: auto;
+  flex: 1 0 auto;
+  gap: 5px;
+  margin-top: 14px;
+  margin-bottom: 14px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   scrollbar-width: thin;
-}
-
-.admin-nav-group {
-  margin: 0 0 13px;
-}
-
-.admin-nav-heading {
-  padding: 9px 9px 6px;
-  color: #94a098;
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 1.05px;
 }
 
 .admin-nav-item {
   display: flex;
-  width: 100%;
-  min-height: 36px;
   align-items: center;
-  gap: 9px;
-  padding: 0 9px;
+  gap: 12px;
+  min-height: 43px;
+  padding: 0 12px;
   border: 0;
-  border-radius: 7px;
-  color: #64736a;
+  border-radius: 9px;
   background: transparent;
+  color: #69768a;
   font: inherit;
-  font-size: 10px;
+  font-size: 12px;
   text-align: left;
   cursor: pointer;
 }
@@ -265,6 +259,33 @@
 
 .admin-top-actions {
   gap: 10px;
+}
+
+.admin-user-copy {
+  min-width: 0;
+  max-width: 150px;
+}
+
+.admin-user-copy strong {
+  display: block;
+  overflow: hidden;
+  color: #e8eef7;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-top-actions .admin-profile-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: #10161f;
+  background: linear-gradient(145deg, #55e1ea, #ff914c);
+  box-shadow: 0 0 18px rgba(61, 215, 232, 0.12);
+}
+
+.admin-top-actions .portal-dev-logout {
+  min-height: 34px;
 }
 
 .admin-global-search {
@@ -1005,7 +1026,18 @@
   }
 
   .admin-top-actions {
-    gap: 3px;
+    gap: 5px;
+  }
+
+  .admin-user-copy,
+  .admin-top-actions .admin-profile-avatar {
+    display: none;
+  }
+
+  .admin-top-actions .portal-dev-logout {
+    min-height: 32px;
+    padding: 0 8px;
+    font-size: 10px;
   }
 
   .admin-content {
@@ -1126,9 +1158,9 @@
 .admin-security-note {
   color: #56dce8;
 }
-
-.admin-nav-heading {
-  color: #78889e;
+.admin-nav-item {
+  color: #aab6c8;
+  transition: color 180ms ease, background 180ms ease, box-shadow 180ms ease, transform 180ms ease;
 }
 
 .admin-nav-item {
@@ -1202,6 +1234,12 @@
 .admin-menu-button:hover {
   color: #3dd7e8;
   background: rgba(61, 215, 232, 0.1);
+}
+
+.admin-icon-button.is-active {
+  color: #3dd7e8;
+  background: rgba(61, 215, 232, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(61, 215, 232, 0.22);
 }
 
 .admin-icon-button:active,
@@ -1689,6 +1727,46 @@
   border-color: rgba(61, 215, 232, 0.24);
   color: #83e7ef;
   background: rgba(61, 215, 232, 0.08);
+}
+
+.admin-portal .devmgmt-menu-trigger {
+  border-color: rgba(148, 163, 184, 0.16);
+  color: #aeb9ca;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.admin-portal .devmgmt-menu-trigger.is-open,
+.admin-portal .devmgmt-menu-trigger:hover {
+  border-color: rgba(61, 215, 232, 0.28);
+  color: #83e7ef;
+  background: rgba(61, 215, 232, 0.1);
+}
+
+.admin-portal .devmgmt-table-wrap {
+  max-height: min(62vh, 620px);
+  overflow: auto;
+  border-top: 1px solid rgba(148, 163, 184, 0.12);
+  scrollbar-color: rgba(148, 163, 184, 0.35) transparent;
+}
+
+.admin-portal .devmgmt-table {
+  min-width: 690px;
+}
+
+.admin-portal .devmgmt-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.admin-portal .devmgmt-table th {
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
+.admin-portal .devmgmt-table td {
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 
 .admin-portal .devmgmt-menu-popover,

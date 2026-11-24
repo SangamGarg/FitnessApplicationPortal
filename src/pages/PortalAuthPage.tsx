@@ -46,8 +46,8 @@ export default function PortalAuthPage({ onAuthenticated }: Props) {
   return <main className="portal-auth-shell">
     <section className="portal-auth-card">
       <div className="portal-auth-brand"><span className="portal-auth-logo"><Activity size={23} /></span><span>MusclePlay<small>ADMIN &amp; DEVELOPER PORTAL</small></span></div>
-      <div className="portal-auth-art"><div className="portal-auth-art-orb orb-one"/><div className="portal-auth-art-orb orb-two"/><div className="portal-auth-art-icon"><ShieldCheck size={31}/></div><span className="portal-auth-art-tag">SECURE WORKSPACE</span></div>
-      <div className="portal-auth-copy"><div className="portal-auth-eyebrow">{mode === "setup" ? "ACCOUNT ACTIVATION" : "WELCOME BACK"}</div><h1>{mode === "setup" ? "Set your password" : "Sign in to your portal"}</h1><p>{mode === "setup" ? "Choose a strong password to activate your developer account." : "Manage your fitness platform with your authorized workspace access."}</p></div>
+      <div className="portal-auth-art"><div className="portal-auth-art-orb orb-one"/><div className="portal-auth-art-orb orb-two"/><div className="portal-auth-art-icon"><ShieldCheck size={31}/></div><span className="portal-auth-art-tag">SECURE PORTAL</span></div>
+      <div className="portal-auth-copy"><div className="portal-auth-eyebrow">{mode === "setup" ? "ACCOUNT ACTIVATION" : "WELCOME"}</div><h1>{mode === "setup" ? "Set your password" : "Sign In"}</h1><p>{mode === "setup" ? "Choose a strong password to activate your developer account." : "Manage MusclePlay with authorized portal credentials. (In case of forgot password kindly contact admin)"}</p></div>
       <form className="portal-auth-form" onSubmit={submit}>
         {mode === "login" ? <label>Email address<div className="portal-auth-input"><Mail size={17}/><input type="email" autoComplete="username" required value={email} onChange={e => setEmail(e.target.value)} placeholder="you@company.com"/></div></label> : <div className="portal-auth-notice"><KeyRound size={18}/><span>This secure setup link can be used once and expires after 24 hours.</span></div>}
         <label>{mode === "setup" ? "Create password" : "Password"}<div className="portal-auth-input"><LockKeyhole size={17}/><input type="password" autoComplete={mode === "setup" ? "new-password" : "current-password"} required minLength={mode === "setup" ? 12 : 1} value={password} onChange={e => setPassword(e.target.value)} placeholder={mode === "setup" ? "At least 12 characters" : "Enter your password"}/></div></label>
@@ -55,7 +55,7 @@ export default function PortalAuthPage({ onAuthenticated }: Props) {
         {error && <div className="portal-auth-alert error">{error}</div>}{message && <div className="portal-auth-alert success">{message}</div>}
         <button className="portal-auth-submit" type="submit" disabled={busy}>{busy ? "Please wait…" : mode === "setup" ? "Activate account" : "Sign in"}<ArrowRight size={17}/></button>
       </form>
-      <div className="portal-auth-footer"><ShieldCheck size={15}/> Access is controlled by your MusclePlay administrator.</div>
+      <div className="portal-auth-footer"><ShieldCheck size={15}/> Access is controlled by MusclePlay administrator.</div>
     </section>
     <div className="portal-auth-bottom">MUSCLEPLAY <span>·</span> PRIVATE MANAGEMENT PORTAL</div>
   </main>;
