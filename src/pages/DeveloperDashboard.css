@@ -99,15 +99,6 @@
   color: #10885f;
   font-weight: 700;
 }
-
-.dev-nav-dot {
-  width: 6px;
-  height: 6px;
-  margin-left: auto;
-  border-radius: 50%;
-  background: #d99b32;
-}
-
 .dev-sidebar-bottom {
   margin-top: auto;
 }

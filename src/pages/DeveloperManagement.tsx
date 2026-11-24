@@ -348,7 +348,6 @@ export default function DeveloperManagement() {
     <div className="developer-management">
       <div className="devmgmt-heading">
         <div>
-          <div className="devmgmt-eyebrow">ACCESS &amp; WORKSPACE</div>
           <h2>Developer management</h2>
           <p>Create developer accounts and manage portal access.</p>
         </div>

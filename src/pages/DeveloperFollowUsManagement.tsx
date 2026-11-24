@@ -454,7 +454,7 @@ export default function DeveloperFollowUsManagement() {
   return (
     <div className="dev-content follow-us-management">
       <div className="dev-page-heading">
-        <div><div className="dev-overline">APP CONTENT MANAGEMENT</div><h1>App Follow Us Management</h1><p>Manage social media and external links displayed in the Fitness application.</p></div>
+        <div><h1>App Follow Us Management</h1><p>Manage social media and external links displayed in the Fitness application.</p></div>
       </div>
 
       <nav className="follow-tabs" aria-label="Follow Us management sections">

@@ -300,7 +300,7 @@ export default function AdminMobileUsers() {
 
   return <div className="admin-mobile-users">
     <div className="admin-mobile-users-heading">
-      <div><div className="admin-eyebrow">ACCOUNT OPERATIONS</div><h1>Mobile App Users</h1><p>Registered mobile application accounts.</p></div>
+      <div><h1>Mobile App Users</h1><p>Registered mobile application accounts.</p></div>
       <div className="mobile-users-heading-actions"><span className="mobile-users-total"><Users size={16} />{pageData.totalElements === null ? "Total unavailable" : `${pageData.totalElements.toLocaleString()} ${query.trim() || status !== "ACTIVE" ? "matching users" : "active users"}`}</span><button className="mobile-users-button secondary" onClick={() => setRefreshKey((current) => current + 1)} disabled={loading}><RefreshCw size={15} className={loading ? "mobile-users-spin" : ""} />Refresh</button></div>
     </div>
 

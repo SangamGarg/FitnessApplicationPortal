@@ -816,7 +816,7 @@ export default function DeveloperSupportWorkspace() {
   return (
     <div className="dev-content support-workspace">
       <div className="dev-page-heading">
-        <div><div className="dev-overline">SUPPORT OPERATIONS</div><h1>Support Center</h1><p>Manage app information, FAQs, and support tickets through authenticated backend APIs.</p></div>
+        <div><h1>Support Center</h1><p>Manage app information, FAQs, and support tickets through authenticated backend APIs.</p></div>
       </div>
       <nav className="support-tabs" aria-label="Support sections">
         {(["App Information", "FAQ Management", "Ticket Management"] as SupportTab[]).map((item) => (

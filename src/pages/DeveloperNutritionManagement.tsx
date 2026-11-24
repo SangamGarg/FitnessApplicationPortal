@@ -672,7 +672,7 @@ export default function DeveloperNutritionManagement() {
   return (
     <div className="dev-content nutrition-management">
       <div className="nutrition-page-heading">
-        <div><div className="dev-overline">NUTRITION / DEVELOPER CATALOG</div><h1>{title}</h1><p>Manage food nutrition, recipe records, and AI-generated recipes through live backend APIs.</p></div>
+        <div><h1>{title}</h1><p>Manage food nutrition, recipe records, and AI-generated recipes through live backend APIs.</p></div>
         <div className="nutrition-page-actions">
           {tab === "foods" && <button type="button" className="nutrition-primary" onClick={() => setFoodDialog(true)}><Plus size={14} /> Add food</button>}
           {tab === "recipes" && <button type="button" className="nutrition-primary" onClick={() => setRecipeDialog(true)}><Plus size={14} /> Add recipe</button>}

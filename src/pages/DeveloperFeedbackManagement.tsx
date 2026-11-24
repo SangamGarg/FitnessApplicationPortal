@@ -424,7 +424,7 @@ export default function DeveloperFeedbackManagement() {
   return (
     <div className="dev-content feedback-management">
       <div className="dev-page-heading">
-        <div><div className="dev-overline">USER SUPPORT</div><h1>Feedback Management</h1><p>Browse, inspect, and manage feedback submitted through the application.</p></div>
+        <div><h1>Feedback Management</h1><p>Browse, inspect, and manage feedback submitted through the application.</p></div>
       </div>
       <div className="feedback-section-tabs" role="tablist" aria-label="Feedback sections">
         <button className={section === "all" ? "active" : ""} onClick={() => changeSection("all")}>All Feedback</button>

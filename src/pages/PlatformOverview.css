@@ -1,5 +1,5 @@
 .developer-overview { color: #182235; }
-.developer-overview.dev-content { max-width: none; margin: 0; padding: 0 0 22px; }
+.developer-overview.dev-content { max-width: none; margin: 0; padding: 0 12px 22px; }
 .developer-overview .dev-page-heading { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 25px; }
 .developer-overview .dev-page-heading h1 { margin: 0; color: #f5f8fc; font-size: clamp(25px, 3vw, 31px); font-weight: 750; letter-spacing: -.8px; }
 .developer-overview .dev-page-heading p { margin: 8px 0 0; color: #a0aec0; font-size: 12px; line-height: 1.6; }

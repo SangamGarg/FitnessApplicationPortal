@@ -1312,7 +1312,7 @@ export default function DeveloperExerciseManagement() {
   return (
     <div className="dev-content exercise-management">
       <div className="dev-page-heading exercise-page-heading">
-        <div><div className="dev-overline">FITNESS CMS / EXERCISE MANAGEMENT</div><h1>Exercise Management</h1><p>Manage exercise catalog records and workout plans using live backend APIs.</p></div>
+        <div><h1>Exercise Management</h1><p>Manage exercise catalog records and workout plans using live backend APIs.</p></div>
         <div className="exercise-page-actions">
           <button type="button" className="exercise-secondary" onClick={() => tab === "exercises" ? void loadExercises(exercisePageIndex, exercisePageSize) : tab === "workouts" ? void loadWorkouts(workoutPageIndex, workoutPageSize) : void loadMuscleGroups()}><RefreshCw size={14} /> Refresh</button>
           {tab !== "muscles" && <button type="button" className="exercise-primary" onClick={() => setDialog(tab === "exercises" ? "exercise-create" : "workout-create")}><Plus size={15} /> {tab === "exercises" ? "Create exercise" : "Create workout plan"}</button>}

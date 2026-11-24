@@ -6,8 +6,8 @@
 .logs-source-summary.is-ready > span, .logs-status-dot.online { background: #20a875; box-shadow: 0 0 0 3px #20a8751a; }
 .logs-button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 35px; padding: 0 12px; border: 1px solid transparent; border-radius: 8px; font: inherit; font-size: 11px; font-weight: 700; cursor: pointer; transition: .15s ease; }
 .logs-button:disabled { opacity: .5; cursor: not-allowed; }
-.logs-button.primary { background: #10885f; color: white; }
-.logs-button.primary:hover:not(:disabled) { background: #08744f; }
+.logs-button.primary { border-color:#ff873c; color:#17110d; background:linear-gradient(110deg,#ff9a54,#ff762e);  }
+.logs-button.primary:hover:not(:disabled) { filter:brightness(1.06); }
 .logs-button.secondary { border-color: #e0e6ec; background: white; color: #536176; }
 .logs-button.secondary:hover:not(:disabled) { border-color: #b9c7d2; background: #f9fbfc; }
 .logs-trace-panel { display: flex; gap: 14px; margin: 8px 0 19px; padding: 17px 18px; border: 1px solid #dfeee8; border-radius: 12px; background: linear-gradient(110deg,#f5fbf8,#fff 72%); }
@@ -99,8 +99,8 @@
 .logs-page { --logs-ink: #edf3fa; --logs-muted: #9aa8bb; --logs-border: rgba(148,163,184,.16); color: #edf3fa; }
 .logs-source-summary,.logs-last-refresh { color: #a0aec0; }
 .logs-source-summary.is-ready > span { background: #55dfe8; box-shadow: 0 0 10px #3dd7e866; }
-.logs-button.primary { color: #141a22; background: linear-gradient(115deg,#55dfe8,#ff914c); box-shadow: 0 5px 18px #3dd7e81c; }
-.logs-button.primary:hover:not(:disabled) { color: #10161f; background: linear-gradient(115deg,#81edf1,#ffab70); }
+.logs-button.primary { border-color:#ff873c; color:#17110d; background:linear-gradient(110deg,#ff9a54,#ff762e);  }
+.logs-button.primary:hover:not(:disabled) { filter:brightness(1.06); }
 .logs-button.secondary,.logs-refresh-sources { border-color: rgba(148,163,184,.19); color: #dce5f0; background: rgba(255,255,255,.045); box-shadow: inset 0 1px rgba(255,255,255,.035); }
 .logs-button.secondary:hover:not(:disabled),.logs-refresh-sources:hover:not(:disabled) { border-color: rgba(61,215,232,.32); color: #8cebf0; background: rgba(61,215,232,.08); }
 .logs-trace-panel,.logs-metadata,.logs-empty-panel { border-color: rgba(148,163,184,.17); color: #edf3fa; background: linear-gradient(145deg,rgba(22,31,47,.82),rgba(13,20,33,.77)); box-shadow: inset 0 1px rgba(255,255,255,.055),0 12px 34px rgba(0,0,0,.14); backdrop-filter: blur(18px) saturate(140%); -webkit-backdrop-filter: blur(18px) saturate(140%); }

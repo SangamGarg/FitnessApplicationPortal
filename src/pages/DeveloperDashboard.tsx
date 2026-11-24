@@ -235,9 +235,7 @@ export default function DeveloperDashboard() {
                             <Icon size={18} />
                             <span>{displayLabel ?? label}</span>
 
-                            {label === "Logs" && (
-                                <span className="dev-nav-dot" />
-                            )}
+                            {label === "Logs"}
                         </button>
                     ))}
                 </nav>
@@ -326,33 +324,13 @@ export default function DeveloperDashboard() {
                     <div className="dev-content">
                         <div className="dev-page-heading">
                             <div>
-                                <div className="dev-overline">
-                                    API MANAGEMENT
-                                </div>
-
                                 <h1>API Explorer</h1>
-
                                 <p>
                                     Browse selected endpoint references from your backend
                                     project.
                                 </p>
                             </div>
                         </div>
-
-                        <div className="dev-notice">
-                            <ShieldCheck size={18} />
-
-                            <div>
-                                <strong>Integrated API reference</strong>
-
-                                <p>
-                                    This is a sample inventory, not a live API catalogue.
-                                    It does not execute requests or verify endpoint
-                                    authorization.
-                                </p>
-                            </div>
-                        </div>
-
                         <div className="dev-panel dev-full-panel">
                             <div className="dev-api-toolbar">
                                 <div>
@@ -538,7 +516,6 @@ export default function DeveloperDashboard() {
                     <div className="dev-content">
                         <div className="dev-page-heading">
                             <div>
-                                <div className="dev-overline">CONTENT WORKSPACE</div>
                                 <h1>{activeSection}</h1>
                                 <p>{moduleDescriptions[activeSection] ?? "This portal module is not connected to a verified backend capability yet."}</p>
                             </div>

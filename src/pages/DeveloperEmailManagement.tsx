@@ -332,7 +332,6 @@ export default function DeveloperEmailManagement() {
     <div className="dev-content email-management">
       <div className="dev-page-heading email-page-heading">
         <div>
-          <div className="dev-overline">OUTBOUND COMMUNICATIONS</div>
           <h1>Email Management</h1>
           <p>Compose and send an authenticated email request to one recipient, a selected list, or all eligible active users.</p>
         </div>

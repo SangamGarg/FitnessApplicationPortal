@@ -608,7 +608,7 @@ export default function DeveloperBadgeManagement() {
   return (
     <div className="dev-content badge-management">
       <div className="dev-page-heading badge-page-heading">
-        <div><div className="dev-overline">APP PROFILE / BADGES</div><h1>Badge Management</h1><p>Manage badge definitions, visibility, unlock information, and metadata for the app profile.</p></div>
+        <div><h1>Badge Management</h1><p>Manage badge definitions, visibility, unlock information, and metadata for the app profile.</p></div>
         <div className="badge-page-actions">
           <button type="button" className="badge-secondary" onClick={() => void loadBadges()} disabled={loading}><RefreshCw size={15} className={loading ? "badge-spin" : ""} /> Refresh</button>
           <button type="button" className="badge-primary" onClick={openCreate}><Plus size={16} /> Create Badge</button>

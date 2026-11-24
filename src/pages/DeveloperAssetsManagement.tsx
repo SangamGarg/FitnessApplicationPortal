@@ -876,7 +876,6 @@ export default function DeveloperAssetsManagement() {
     <div className="dev-content assets-management">
       <header className="dev-page-heading assets-page-heading">
         <div>
-          <div className="dev-overline">DYNAMIC MEDIA &amp; CATALOG</div>
           <h1>Assets Management</h1>
           <p>Manage catalog definitions and uploaded application media through the authenticated assets API.</p>
         </div>

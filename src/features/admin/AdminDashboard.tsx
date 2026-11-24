@@ -2,8 +2,6 @@ import { useMemo, useState } from "react";
 import {
   Activity,
   AlertTriangle,
-  ArrowDownUp,
-  BadgeDollarSign,
   Bell,
   ChevronRight,
   Coins,
@@ -24,14 +22,13 @@ import PlatformOverview from "../../pages/PlatformOverview";
 import DeveloperManagement from "../../pages/DeveloperManagement";
 import AdminMobileUsers from "./AdminMobileUsers";
 import AdminAuditLogs from "./AdminAuditLogs";
+import WalletManagement from "./WalletManagement";
 import "./AdminDashboard.css";
 
 type AdminSection =
   | "Platform Overview"
   | "Mobile Users"
-  | "MP Coins Economy"
-  | "Cashout and Payout Operations"
-  | "Coin Store Packs"
+  | "MP Coins"
   | "Developers"
   | "Audit Logs"
   | "Platform Settings"
@@ -47,37 +44,10 @@ const navigation: { label: AdminSection; icon: LucideIcon }[] = [
   { label: "Audit Logs", icon: History },
   { label: "Mobile Users", icon: Smartphone },
   { label: "Developers", icon: Users },
-  { label: "MP Coins Economy", icon: Coins },
-  { label: "Cashout and Payout Operations", icon: BadgeDollarSign },
-  { label: "Coin Store Packs", icon: ArrowDownUp },
+  { label: "MP Coins", icon: Coins },
 ];
 
 const previewData: Partial<Record<AdminSection, PreviewData>> = {
-  "MP Coins Economy": {
-    description: "Example ledger rows only. No balances are calculated or changed here.",
-    columns: ["Transaction", "Type", "Direction", "Amount", "Status"],
-    rows: [
-      ["DEMO-TXN-2001", "Activity reward", "Credit", "120 MP", "Example"],
-      ["DEMO-TXN-2002", "Cashout reservation", "Reserve", "500 MP", "Example"],
-      ["DEMO-TXN-2003", "Admin adjustment", "Debit", "Not available", "Not supported"],
-    ],
-  },
-  "Cashout and Payout Operations": {
-    description: "Illustrative requests only. Reviews here never contact a payment provider or move money.",
-    columns: ["Request", "User", "Coins requested", "Net amount", "Status"],
-    rows: [
-      ["DEMO-CO-0142", "MP-DEMO-1042", "2,500 MP", "Not configured", "Pending review"],
-      ["DEMO-CO-0143", "MP-DEMO-1088", "1,000 MP", "Not configured", "Compliance review"],
-    ],
-  },
-  "Coin Store Packs": {
-    description: "Example product configurations. Store billing and purchase verification are not connected.",
-    columns: ["Product key", "Coins", "Price", "Store status", "Publication"],
-    rows: [
-      ["demo_starter_pack", "250 + bonus not set", "Not configured", "Not connected", "Draft"],
-      ["demo_boost_pack", "1,500 + bonus not set", "Not configured", "Not connected", "Draft"],
-    ],
-  },
   "Platform Settings": {
     description: "Configuration values are not loaded from a backend and cannot be saved.",
     columns: ["Setting", "Current value", "Source", "Status"],
@@ -133,8 +103,7 @@ export default function AdminDashboard() {
   }
 
   const sensitive = [
-    "MP Coins Economy",
-    "Cashout and Payout Operations",
+    "MP Coins",
   ].includes(activeSection);
 
   return (
@@ -188,6 +157,8 @@ export default function AdminDashboard() {
             <AdminMobileUsers />
           ) : activeSection === "Audit Logs" ? (
             <AdminAuditLogs />
+          ) : activeSection === "MP Coins" ? (
+            <WalletManagement />
           ) : (
             <>
               <div className="admin-page-heading">
@@ -208,7 +179,6 @@ export default function AdminDashboard() {
               {selectedRow && <aside className="admin-detail-card"><div className="admin-detail-heading"><div><span className="admin-eyebrow">RECORD PREVIEW</span><h2>{selectedRow[0]}</h2></div><button className="admin-icon-button" aria-label="Close details" onClick={() => setSelectedRow(null)}><X size={17} /></button></div><dl>{(data?.columns ?? []).map((column, index) => <div key={column}><dt>{column}</dt><dd>{selectedRow[index] || "Unavailable"}</dd></div>)}</dl><div className="admin-detail-warning"><AlertTriangle size={16} /><span>This is a fixture for UI review, not a real user or request.</span></div>{sensitive && <button className="admin-reason-button" onClick={previewSensitiveAction}>Preview protected action</button>}</aside>}
             </>
           )}
-          <footer className="admin-footer"><span>MusclePlay Management Portal</span><span>{activeSection === "Mobile Users" ? "Mobile account data provided by the admin API" : "Frontend preview · Backend integration pending"}</span></footer>
         </div>
       </main>
 
