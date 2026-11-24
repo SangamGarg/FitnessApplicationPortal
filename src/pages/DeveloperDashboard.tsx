@@ -38,6 +38,7 @@ import DeveloperGamificationManagement from "./DeveloperGamificationManagement";
 import { portalLogout } from "../lib/portalApi";
 import PlatformOverview from "./PlatformOverview";
 import DeveloperLogsPage from "./DeveloperLogsPage";
+import DeveloperCalculatorCatalog from "./DeveloperCalculatorCatalog";
 
 type DeveloperSection =
     | "Overview"
@@ -78,7 +79,7 @@ const navigation: {
 
 const moduleDescriptions: Partial<Record<DeveloperSection, string>> = {
     "Nutrition Management": "Manage the nutrition food catalog, recipes, and AI recipe generation with live backend APIs.",
-    "Analytics Management": "Calculator records can be managed through the existing API console. Configuration versioning and validation are not connected.",
+    "Analytics Management": "Manage calculator catalog entries through the authenticated analytics API.",
     "Exercise Management": "Exercise catalog and workout plan management are available through the updated exercise APIs.",
     "Assets Management": "Manage dynamic asset catalog keys, uploaded images, metadata, and status through the assets API.",
     "Support Center": "App information, FAQ management, and support ticket operations are available through the Support API.",
@@ -496,6 +497,7 @@ export default function DeveloperDashboard() {
                 {activeSection === "Exercise Management" && <DeveloperExerciseManagement />}
                 {activeSection === "Nutrition Management" && <DeveloperNutritionManagement />}
                 {activeSection === "Games and Challenges Builder" && <DeveloperGamificationManagement />}
+                {activeSection === "Analytics Management" && <DeveloperCalculatorCatalog />}
 
                 {![
                     "Overview",
@@ -512,6 +514,7 @@ export default function DeveloperDashboard() {
                     "Exercise Management",
                     "Nutrition Management",
                     "Games and Challenges Builder",
+                    "Analytics Management",
                 ].includes(activeSection) && (
                     <div className="dev-content">
                         <div className="dev-page-heading">
