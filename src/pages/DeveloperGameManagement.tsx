@@ -654,7 +654,7 @@ export default function DeveloperGameManagement() {
   const selectedGame = modal === true ? null : modal || null;
 
   return <div className="game-management">
-    <header className="game-page-heading"><div><span className="game-kicker">GAMIFICATION / GAMES CATALOG</span><h2>Games</h2><p>Manage game configuration, required media, availability, and rewards through the backend API.</p></div><div className="game-page-actions"><button type="button" className="game-secondary" disabled={loading} onClick={() => setRefresh((value) => value + 1)}><RefreshCw size={13} /> Refresh</button><button type="button" className="game-primary" onClick={() => setModal(true)}><Plus size={13} /> Create game</button></div></header>
+    <header className="game-page-heading"><div><h2>Games</h2></div><div className="game-page-actions"><button type="button" className="game-secondary" disabled={loading} onClick={() => setRefresh((value) => value + 1)}><RefreshCw size={13} /> Refresh</button><button type="button" className="game-primary" onClick={() => setModal(true)}><Plus size={13} /> Create game</button></div></header>
     {notice && <div className={`game-notice ${notice.ok ? "success" : "error"}`} role="status"><span>{notice.ok ? <Check size={14} /> : <AlertCircle size={14} />}{notice.text}</span><button type="button" aria-label="Dismiss notification" onClick={() => setNotice(null)}><X size={13} /></button></div>}
     <section className="game-panel">
       <header className="game-panel-header"><div><h3>Game catalog</h3><p>Games returned by the authenticated gamification API.</p></div><span className="game-count">{loading ? "Loading…" : loadError ? "Unavailable" : `${filtered.length} / ${games.length}`}</span></header>

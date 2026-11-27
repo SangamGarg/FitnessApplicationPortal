@@ -50,6 +50,8 @@ type TicketMessage = {
 
 type ApiResult = { status: number | null; body: string; error: string };
 
+const FAQ_CATEGORIES_ENDPOINT = "/api/v1/portal/dev/support/faqs/category";
+
 const categoryLabels: Record<TicketCategory, string> = {
   ACCOUNT: "Account & Login",
   PAYMENT: "Payment & Subscription",
@@ -112,6 +114,37 @@ async function apiRequest(method: string, path: string, body?: unknown): Promise
   } catch (error) {
     return { status: null, body: "", error: error instanceof Error ? error.message : "Network request failed." };
   }
+}
+
+interface SupportFaqCategoryDto {
+  id: number;
+  categoryKey: string;
+  name: string;
+  description: string;
+  iconKey: string;
+  sortOrder: number;
+}
+
+let faqCategoriesRequest: Promise<{ categories: SupportFaqCategoryDto[]; result: ApiResult }> | null = null;
+
+function getFaqCategories(): Promise<{ categories: SupportFaqCategoryDto[]; result: ApiResult }> {
+  if (faqCategoriesRequest) return faqCategoriesRequest;
+  faqCategoriesRequest = (async () => {
+    const result = await apiRequest("GET", FAQ_CATEGORIES_ENDPOINT);
+    if (result.error) return { categories: [], result };
+
+    try {
+      const parsed: unknown = JSON.parse(result.body);
+      if (!Array.isArray(parsed)) throw new Error("Expected a category list.");
+      return { categories: parsed as SupportFaqCategoryDto[], result };
+    } catch {
+      return {
+        categories: [],
+        result: { ...result, error: "The FAQ categories response was not a valid JSON array." },
+      };
+    }
+  })().finally(() => { faqCategoriesRequest = null; });
+  return faqCategoriesRequest;
 }
 
 function CopyButton({ value, label = "Copy" }: { value: string; label?: string }) {
@@ -331,8 +364,98 @@ type PortalFaq = {
   updatedBy: string;
 };
 
+function FaqCategories() {
+  const [categories, setCategories] = useState<SupportFaqCategoryDto[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
+  const requestId = useRef(0);
+
+  async function refreshCategories() {
+    if (loading) return;
+    setLoading(true);
+    setError("");
+    const currentRequestId = ++requestId.current;
+    const response = await getFaqCategories();
+    if (currentRequestId !== requestId.current) return;
+    setCategories(response.categories);
+    setError(response.result.error);
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    const currentRequestId = ++requestId.current;
+    void getFaqCategories().then((response) => {
+      if (currentRequestId !== requestId.current) return;
+      setCategories(response.categories);
+      setError(response.result.error);
+      setLoading(false);
+    });
+    return () => { requestId.current += 1; };
+  }, []);
+
+  const visibleCategories = useMemo(() => {
+    const query = search.trim().toLocaleLowerCase();
+    return [...categories]
+      .sort((left, right) => left.sortOrder - right.sortOrder || left.id - right.id)
+      .filter((category) => !query || [category.name, category.categoryKey, category.description, category.iconKey]
+        .some((value) => (value || "").toLocaleLowerCase().includes(query)));
+  }, [categories, search]);
+
+  return (
+    <section className="support-panel support-category-panel" aria-labelledby="support-categories-title">
+      <div className="support-panel-heading support-category-heading">
+        <div>
+          <h2 id="support-categories-title">FAQ Categories</h2>
+          <p>Categories configured for the application's FAQs.</p>
+        </div>
+        <div className="support-category-actions">
+          <span className="support-category-count">{categories.length} {categories.length === 1 ? "category" : "categories"}</span>
+          <button className="support-secondary" disabled={loading} onClick={() => void refreshCategories()}>
+            {loading ? <LoaderCircle size={14} className="support-spin" /> : <RefreshCw size={14} />}
+            Refresh
+          </button>
+        </div>
+      </div>
+      <div className="support-search support-category-search">
+        <Search size={15} aria-hidden="true" />
+        <input aria-label="Search FAQ categories" placeholder="Search name, key, description, or icon" value={search} onChange={(event) => setSearch(event.target.value)} />
+        {search && <button type="button" aria-label="Clear search" onClick={() => setSearch("")}><X size={14} /></button>}
+      </div>
+      {loading ? (
+        <div className="support-loading"><LoaderCircle size={18} className="support-spin" />Loading FAQ categories…</div>
+      ) : error ? (
+        <div className="support-category-error-state">
+          <div className="support-error"><AlertCircle size={16} />{error}</div>
+          <button className="support-secondary" disabled={loading} onClick={() => void refreshCategories()}><RefreshCw size={14} />Retry</button>
+        </div>
+      ) : categories.length === 0 ? (
+        <div className="support-empty"><strong>No FAQ categories available</strong><p>The API returned an empty category list.</p></div>
+      ) : visibleCategories.length === 0 ? (
+        <div className="support-empty"><strong>No matching categories</strong><p>Try another search term.</p></div>
+      ) : (
+        <div className="support-category-table-wrap">
+          <table className="support-ticket-table support-category-table">
+            <thead><tr><th>ID</th><th>Category Name</th><th>Category Key</th><th>Description</th><th>Icon Key</th><th>Sort Order</th></tr></thead>
+            <tbody>{visibleCategories.map((category) => (
+              <tr key={category.id}>
+                <td>{category.id}</td>
+                <td><strong>{category.name || "—"}</strong></td>
+                <td><code className="support-category-code">{category.categoryKey || "—"}</code></td>
+                <td><span className="support-category-description" title={category.description || undefined}>{category.description || "No description"}</span></td>
+                <td><code className="support-category-code">{category.iconKey || "—"}</code></td>
+                <td><span className="support-category-order">{category.sortOrder}</span></td>
+              </tr>
+            ))}</tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  );
+}
+
 function FaqManagement() {
-  const [tab, setTab] = useState<"Upload" | "Edit" | "Category" | "Get">("Upload");
+  const [tab, setTab] = useState<"Upload" | "Edit" | "CreateCategory" | "Categories" | "Get">("Upload");
   const [result, setResult] = useState<ApiResult>({ status: null, body: "", error: "" });
   const [faqList, setFaqList] = useState<PortalFaq[]>([]);
   const [getFaqBusy, setGetFaqBusy] = useState(false);
@@ -366,7 +489,7 @@ function FaqManagement() {
     setGetFaqBusy(false);
   }
 
-  function chooseFaqTab(nextTab: "Upload" | "Edit" | "Category" | "Get") {
+  function chooseFaqTab(nextTab: "Upload" | "Edit" | "CreateCategory" | "Categories" | "Get") {
     setTab(nextTab);
     setValidation("");
     setResult({ status: null, body: "", error: "" });
@@ -420,8 +543,9 @@ function FaqManagement() {
   return (
     <div>
       <div className="support-subtabs">
-        {(["Upload", "Edit", "Category", "Get"] as const).map((item) => <button key={item} className={tab === item ? "active" : ""} onClick={() => chooseFaqTab(item)}>{item === "Upload" ? "FAQ List / Upload" : item === "Edit" ? "Edit FAQ" : item === "Category" ? "FAQ Categories" : "Get FAQs"}</button>)}
+        {(["Upload", "Edit", "CreateCategory", "Categories", "Get"] as const).map((item) => <button key={item} className={tab === item ? "active" : ""} onClick={() => chooseFaqTab(item)}>{item === "Upload" ? "FAQ List / Upload" : item === "Edit" ? "Edit FAQ" : item === "CreateCategory" ? "Create Category" : item === "Categories" ? "FAQ Categories" : "Get FAQs"}</button>)}
       </div>
+      {tab === "Categories" && <FaqCategories />}
       {tab === "Get" && (
         <div className="support-faq-results">
           <section className="support-panel support-faq-results-panel">
@@ -514,7 +638,7 @@ function FaqManagement() {
           })()} result={result} />
         </div>
       )}
-      {tab === "Category" && (
+      {tab === "CreateCategory" && (
         <div className="support-editor-grid">
           <section className="support-panel">
             <div className="support-field-grid">

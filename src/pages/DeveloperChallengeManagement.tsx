@@ -550,7 +550,7 @@ export default function DeveloperChallengeManagement() {
   return (
     <div className="dev-content challenge-management">
       <header className="challenge-page-heading">
-        <div><div className="dev-overline">GAMES / CHALLENGE CONFIGURATION</div><h1>Games &amp; Challenges</h1><p>Create fitness challenges, configure targets and rewards, and control publication status through live APIs.</p></div>
+        <div><h1>Games &amp; Challenges</h1></div>
         <div className="challenge-page-actions"><button type="button" className="challenge-secondary" disabled={loading} onClick={() => void reload()}><RefreshCw size={14} /> Refresh</button><button type="button" className="challenge-primary" onClick={() => setModal({ mode: "create", challenge: null })}><Plus size={14} /> Create challenge</button></div>
       </header>
       {notice && <div className={`challenge-notice ${notice.ok ? "success" : "error"}`} role="status"><span>{notice.ok ? <Check size={14} /> : <AlertCircle size={14} />}{notice.text}</span><button type="button" aria-label="Dismiss notification" onClick={() => setNotice(null)}><X size={14} /></button></div>}

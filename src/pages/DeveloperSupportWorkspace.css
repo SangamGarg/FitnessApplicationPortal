@@ -36,6 +36,23 @@
 .support-faq-results { display:grid; grid-template-columns:minmax(0,1fr) minmax(340px,.9fr); gap:18px; align-items:start; }
 .support-faq-results-panel { padding:18px; }
 .support-faq-results-panel .support-panel-heading { align-items:center; }
+.support-category-panel { overflow:hidden; padding:18px; }
+.support-category-heading { align-items:center; gap:14px; }
+.support-category-actions { display:flex; align-items:center; gap:10px; }
+.support-category-count { color:#79869a; font-size:11px; white-space:nowrap; }
+.support-category-search { max-width:460px; margin:0 0 14px; }
+.support-category-search input { min-width:0; }
+.support-category-search button { display:grid; width:26px; height:26px; flex:0 0 auto; place-items:center; border:0; border-radius:6px; background:transparent; color:#8792a2; cursor:pointer; }
+.support-category-search button:hover { background:#f2f5f8; color:#45546a; }
+.support-category-table-wrap { overflow:auto; }
+.support-category-table { min-width:760px; }
+.support-category-table td { cursor:default; }
+.support-category-table td strong { overflow-wrap:anywhere; }
+.support-category-code { color:#526177; font:11px ui-monospace,SFMono-Regular,Menlo,monospace; }
+.support-category-description { display:-webkit-box; max-width:330px; overflow:hidden; color:#68778a; line-height:1.5; overflow-wrap:anywhere; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
+.support-category-order { display:inline-flex; min-width:28px; justify-content:center; padding:4px 7px; border-radius:6px; background:#f2f5f8; color:#526177; font-variant-numeric:tabular-nums; }
+.support-category-error-state { display:grid; justify-items:start; gap:4px; }
+.support-category-error-state .support-error { margin:0 0 8px; }
 .support-faq-results-list { display:grid; gap:10px; }
 .support-faq-result-card { padding:14px; border:1px solid #e7edf2; border-radius:9px; }
 .support-faq-result-meta { display:flex; flex-wrap:wrap; align-items:center; gap:8px; color:#79869a; font-size:10px; }
@@ -139,7 +156,7 @@
 .support-message-timeline article p { margin:8px 0 0; color:#68778a; font-size:14px; line-height:1.6; }
 @media(max-width:1180px) { .support-ticket-layout { grid-template-columns:1fr; } .support-ticket-detail { position:relative; top:auto; max-height:none; } }
 @media(max-width:900px) { .support-editor-grid,.support-faq-results { grid-template-columns:1fr; } .support-ticket-toolbar { grid-template-columns:minmax(180px,1fr) 1fr; } }
-@media(max-width:600px) { .support-field-grid { grid-template-columns:1fr; } .support-ticket-toolbar { grid-template-columns:1fr; } .support-pagination { align-items:flex-start; flex-direction:column; } .support-tabs button { flex:1; } }
+@media(max-width:600px) { .support-field-grid { grid-template-columns:1fr; } .support-ticket-toolbar { grid-template-columns:1fr; } .support-pagination { align-items:flex-start; flex-direction:column; } .support-tabs button { flex:1; } .support-category-panel { padding:14px; } .support-category-heading { align-items:flex-start; flex-direction:column; } .support-category-actions { width:100%; justify-content:space-between; } .support-category-search { max-width:none; } }
 
 /* Keep Support surfaces consistent with the dashboard's dark glass theme. */
 .dev-portal .support-workspace {
@@ -236,6 +253,12 @@
 .dev-portal .support-faq-result-card small,
 .dev-portal .support-message-timeline article time { color: #8796ab; }
 .dev-portal .support-faq-result-meta > strong { color: #c9d7e8; }
+.dev-portal .support-category-count,
+.dev-portal .support-category-description { color:#9aa8bb; }
+.dev-portal .support-category-code { color:#c9d7e8; }
+.dev-portal .support-category-order { color:#c9d7e8; background:rgba(255,255,255,.055); }
+.dev-portal .support-category-search button { color:#9aa8bb; }
+.dev-portal .support-category-search button:hover { color:#e1eaf4; background:rgba(255,255,255,.08); }
 .dev-portal .support-faq-flag { color: #f3cb86; background: rgba(130, 77, 22, 0.17); }
 .dev-portal .support-faq-active { color: #8de8b4; background: rgba(20, 98, 63, 0.19); }
 .dev-portal .support-faq-inactive { color: #b5c0ce; background: rgba(255, 255, 255, 0.045); }

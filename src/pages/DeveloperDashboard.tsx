@@ -4,13 +4,14 @@ import {
     ArrowUpRight,
     Award,
     Bell,
-    Code2,
     CircleHelp,
     FileCode2,
     Settings,
     Database,
     Dumbbell,
+    PanelsTopLeft,
     FileImage,
+    FileText,
     Gamepad2,
     LayoutDashboard,
     LifeBuoy,
@@ -39,6 +40,8 @@ import { portalLogout } from "../lib/portalApi";
 import PlatformOverview from "./PlatformOverview";
 import DeveloperLogsPage from "./DeveloperLogsPage";
 import DeveloperCalculatorCatalog from "./DeveloperCalculatorCatalog";
+import DeveloperAppDashboardManagement from "./DeveloperAppDashboardManagement";
+import DeveloperScreenContentManagement from "./DeveloperScreenContentManagement";
 
 type DeveloperSection =
     | "Overview"
@@ -55,7 +58,9 @@ type DeveloperSection =
     | "App Follow Us"
     | "Email Management"
     | "Notification Management"
-    | "Badge Management";
+    | "Badge Management"
+    | "App Dashboard Management"
+    | "App Screen Content Management";
 
 const navigation: {
     label: DeveloperSection;
@@ -75,17 +80,17 @@ const navigation: {
         { label: "Email Management", icon: Mail },
         { label: "Notification Management", icon: BellRing },
         { label: "Badge Management", icon: Award },
+        { label: "App Dashboard Management", icon: PanelsTopLeft },
+        { label: "App Screen Content Management", icon: FileText },
     ];
 
-const moduleDescriptions: Partial<Record<DeveloperSection, string>> = {
-    "Nutrition Management": "Manage the nutrition food catalog, recipes, and AI recipe generation with live backend APIs.",
-    "Analytics Management": "Manage calculator catalog entries through the authenticated analytics API.",
-    "Exercise Management": "Exercise catalog and workout plan management are available through the updated exercise APIs.",
-    "Assets Management": "Manage dynamic asset catalog keys, uploaded images, metadata, and status through the assets API.",
-    "Support Center": "App information, FAQ management, and support ticket operations are available through the Support API.",
-};
-
 const endpoints: { method: string; path: string; module: string; description: string; status: string; expectedResponse?: string }[] = [
+    { method: "GET", path: "/api/v1/portal/dev/screen-content", module: "Screen Content", description: "Fetch all app screen copy records", status: "Integrated frontend reference" },
+    { method: "GET", path: "/api/v1/portal/dev/screen-content/{id}", module: "Screen Content", description: "Fetch a screen content record", status: "Integrated frontend reference" },
+    { method: "POST", path: "/api/v1/portal/dev/screen-content", module: "Screen Content", description: "Create screen content", status: "Integrated frontend reference" },
+    { method: "PUT", path: "/api/v1/portal/dev/screen-content/{id}", module: "Screen Content", description: "Update screen content", status: "Integrated frontend reference" },
+    { method: "DELETE", path: "/api/v1/portal/dev/screen-content/{id}", module: "Screen Content", description: "Delete screen content", status: "Integrated frontend reference" },
+    { method: "PATCH", path: "/api/v1/portal/dev/screen-content/{id}/status", module: "Screen Content", description: "Activate or deactivate screen content", status: "Integrated frontend reference" },
     { method: "GET", path: "/api/v1/portal/dev/exercise/catalog", module: "Exercise", description: "Fetch paginated exercise catalog", status: "Integrated frontend reference" },
     { method: "GET", path: "/api/v1/portal/dev/exercise/catalog/{id}", module: "Exercise", description: "Fetch exercise details", status: "Integrated frontend reference" },
     { method: "POST", path: "/api/v1/portal/dev/exercise/catalog", module: "Exercise", description: "Create exercise", status: "Integrated frontend reference" },
@@ -180,19 +185,23 @@ const endpoints: { method: string; path: string; module: string; description: st
 ];
 
 export default function DeveloperDashboard() {
-    const [activeSection, setActiveSection] = useState<DeveloperSection>(() =>
-        window.location.pathname.replace(/\/$/, "") === "/developer/logs" ? "Logs" : "Overview",
-    );
+    const [activeSection, setActiveSection] = useState<DeveloperSection>(() => {
+        const path = window.location.pathname.replace(/\/$/, "");
+        return path === "/developer/logs" ? "Logs" : path === "/developer/app-dashboard-management" ? "App Dashboard Management" : path === "/developer/screen-content" ? "App Screen Content Management" : "Overview";
+    });
 
     useEffect(() => {
-        const syncLocation = () => setActiveSection(window.location.pathname.replace(/\/$/, "") === "/developer/logs" ? "Logs" : "Overview");
+        const syncLocation = () => {
+            const path = window.location.pathname.replace(/\/$/, "");
+            setActiveSection(path === "/developer/logs" ? "Logs" : path === "/developer/app-dashboard-management" ? "App Dashboard Management" : path === "/developer/screen-content" ? "App Screen Content Management" : "Overview");
+        };
         window.addEventListener("popstate", syncLocation);
         return () => window.removeEventListener("popstate", syncLocation);
     }, []);
 
     const navigateToSection = (section: DeveloperSection) => {
         setActiveSection(section);
-        const path = section === "Logs" ? "/developer/logs" : "/";
+        const path = section === "Logs" ? "/developer/logs" : section === "App Dashboard Management" ? "/developer/app-dashboard-management" : section === "App Screen Content Management" ? "/developer/screen-content" : "/";
         if (window.location.pathname !== path) window.history.pushState({}, "", path);
     };
 
@@ -494,6 +503,8 @@ export default function DeveloperDashboard() {
                 {activeSection === "Notification Management" && <DeveloperNotificationManagement />}
                 {activeSection === "Assets Management" && <DeveloperAssetsManagement />}
                 {activeSection === "Badge Management" && <DeveloperBadgeManagement />}
+                {activeSection === "App Dashboard Management" && <DeveloperAppDashboardManagement />}
+                {activeSection === "App Screen Content Management" && <DeveloperScreenContentManagement />}
                 {activeSection === "Exercise Management" && <DeveloperExerciseManagement />}
                 {activeSection === "Nutrition Management" && <DeveloperNutritionManagement />}
                 {activeSection === "Games and Challenges Builder" && <DeveloperGamificationManagement />}
@@ -515,28 +526,11 @@ export default function DeveloperDashboard() {
                     "Nutrition Management",
                     "Games and Challenges Builder",
                     "Analytics Management",
+                    "App Screen Content Management",
                 ].includes(activeSection) && (
                     <div className="dev-content">
                         <div className="dev-page-heading">
-                            <div>
-                                <h1>{activeSection}</h1>
-                                <p>{moduleDescriptions[activeSection] ?? "This portal module is not connected to a verified backend capability yet."}</p>
-                            </div>
-                            <span className="dev-status-badge unknown"><span />Not connected</span>
-                        </div>
-
-                        <div className="dev-notice">
-                            <ShieldCheck size={18} />
-                            <div>
-                                <strong>Portal screen only — not operational</strong>
-                                <p>No records are fabricated here. Connect the corresponding backend API and permission policy before enabling data or write actions.</p>
-                            </div>
-                        </div>
-
-                        <div className="dev-empty-state">
-                            <span className="dev-empty-icon"><Code2 size={26} /></span>
-                            <h2>No verified data source</h2>
-                            <p>Explore the API Explorer for endpoint references and integration documentation.</p>
+                     
                         </div>
                     </div>
                 )}
